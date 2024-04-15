@@ -1,7 +1,6 @@
-console.log('background is running')
-
-chrome.runtime.onMessage.addListener((request) => {
-  if (request.type === 'COUNT') {
-    console.log('background has received a message from popup, and count is ', request?.count)
+chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+  if (tab.url?.includes('reddit.com')) {
+    console.log('webpage is reddit!');
+    chrome.tabs.sendMessage(tabId, { type: 'REDDIT', url: tab.url})
   }
 })
