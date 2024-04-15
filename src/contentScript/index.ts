@@ -7,6 +7,6 @@ chrome.runtime.onMessage.addListener((message, sender, response) => {
 function hideReddit() {
   const subgrid = document.getElementsByClassName('subgrid-container')
   if (subgrid.length) {
-    subgrid[0].style.display = 'none'
+    (subgrid[0] as HTMLElement).style.display = 'none'
   }
 }
