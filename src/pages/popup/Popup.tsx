@@ -1,12 +1,12 @@
-import React from "react";
+import { useEffect, useState } from "react";
 import { Switch } from "@pages/popup/components/ui/switch";
 import { Label } from "@pages/popup/components/ui/label";
 import { defaultSettings, Settings } from "@pages/popup/lib/types";
 
 export default function Popup() {
-  const [settings, setSettings] = React.useState<Settings | null>(null);
+  const [settings, setSettings] = useState<Settings | null>(null);
 
-  React.useEffect(() => {
+  useEffect(() => {
     chrome.storage.sync.get("settings", (data) => {
       if (!data.settings) {
         chrome.storage.sync.set({ settings: defaultSettings });
@@ -17,7 +17,7 @@ export default function Popup() {
     });
   }, []);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!settings) return;
 
     chrome.storage.sync.set({ settings });
