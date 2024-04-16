@@ -1,14 +1,7 @@
 import React from "react";
 import { Switch } from "@pages/popup/components/ui/switch";
 import { Label } from "@pages/popup/components/ui/label";
-
-type Settings = {
-  hideHomeFeed: boolean;
-};
-
-const defaultSettings: Settings = {
-  hideHomeFeed: true,
-};
+import { defaultSettings, Settings } from "@pages/popup/lib/types";
 
 export default function Popup() {
   const [settings, setSettings] = React.useState<Settings | null>(null);

@@ -1,14 +1,23 @@
+import { Settings } from "@pages/popup/lib/types";
+
 chrome.runtime.onMessage.addListener((message, sender, response) => {
-  if (message.type === 'REDDIT') {
-    hideReddit(message.url);
+  processTab(message.url, message.settings);
+});
+
+function processTab(url: string, settings: Settings) {
+  if (url.includes("reddit.com")) {
+    processReddit(url, settings);
   }
-})
+}
 
-function hideReddit(url: string) {
-  if (url.includes('/comments') || url.includes("/search")) return;
+function processReddit(url: string, settings: Settings) {
+  if (url.includes("/comments") || url.includes("/search")) return;
 
-  const subgrid = document.getElementsByClassName('subgrid-container')
+  const subgrid = document.getElementsByClassName("subgrid-container");
+
   if (subgrid.length) {
-    (subgrid[0] as HTMLElement).style.display = 'none'
+    (subgrid[0] as HTMLElement).style.display = settings.hideHomeFeed
+      ? "none"
+      : "block";
   }
 }
