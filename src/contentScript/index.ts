@@ -5,7 +5,7 @@ chrome.runtime.onMessage.addListener((message, sender, response) => {
 })
 
 function hideReddit(url: string) {
-  if (url.includes('comments')) return;
+  if (url.includes('/comments') || url.includes("/search")) return;
 
   const subgrid = document.getElementsByClassName('subgrid-container')
   if (subgrid.length) {
