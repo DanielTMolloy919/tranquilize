@@ -11,12 +11,21 @@ function processTab(url: string, settings: Settings) {
 }
 
 function processReddit(url: string, settings: Settings) {
-  if (url.includes("/comments") || url.includes("/search")) return;
+  const homeFeedRes = document.getElementsByClassName("subgrid-container");
 
-  const subgrid = document.getElementsByClassName("subgrid-container");
+  if (
+    homeFeedRes.length &&
+    !url.includes("/comments") &&
+    !url.includes("/search")
+  ) {
+    (homeFeedRes[0] as HTMLElement).style.display = settings.hideHomeFeed
+      ? "none"
+      : "block";
+  }
 
-  if (subgrid.length) {
-    (subgrid[0] as HTMLElement).style.display = settings.hideHomeFeed
+  const sidebarRes = document.getElementsByTagName("reddit-sidebar-nav");
+  if (sidebarRes.length) {
+    (sidebarRes[0] as HTMLElement).style.display = settings.hideSidebar
       ? "none"
       : "block";
   }

@@ -28,7 +28,7 @@ export default function Popup() {
   }
 
   return (
-    <div className="absolute top-0 left-0 right-0 bottom-0 text-center h-full p-3">
+    <div className="absolute top-0 left-0 right-0 bottom-0 text-center h-full p-3 flex flex-col gap-2">
       <div className="flex items-center space-x-2">
         <Switch
           id="reddit-home-feed"
@@ -38,6 +38,17 @@ export default function Popup() {
           }}
         />
         <Label htmlFor="reddit-home-feed">Hide Home Feed</Label>
+      </div>
+
+      <div className="flex items-center space-x-2">
+        <Switch
+          id="reddit-sidebar"
+          checked={settings.hideSidebar}
+          onCheckedChange={(checked) => {
+            setSettings({ ...settings, hideSidebar: checked });
+          }}
+        />
+        <Label htmlFor="reddit-sidebar">Hide Sidebar</Label>
       </div>
     </div>
   );
