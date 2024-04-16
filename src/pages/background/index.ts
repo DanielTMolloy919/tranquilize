@@ -21,10 +21,10 @@ chrome.storage.onChanged.addListener((changes) => {
     settings = changes.settings.newValue;
   }
 
-  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-    if (tabs[0]?.id) {
-      updateTab(tabs[0].id, tabs[0].url || "");
-    }
+  chrome.tabs.query({}, (tabs) => {
+    tabs.forEach((tab) => {
+      tab.url && tab.id && updateTab(tab.id, tab.url);
+    });
   });
 });
 
