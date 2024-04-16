@@ -16,7 +16,6 @@
     "128": "icon-128.png"
   },
   "permissions": [
-    "sidePanel",
     "storage",
     "tabs"
   ],
