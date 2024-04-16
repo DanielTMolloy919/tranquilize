@@ -5,3 +5,5 @@ export type Settings = {
 export const defaultSettings: Settings = {
   hideHomeFeed: true,
 };
+
+export const managedSites = ["reddit.com"];

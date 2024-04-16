@@ -1,5 +1,9 @@
 // preload settings from storage
-import { defaultSettings, Settings } from "@pages/popup/lib/types";
+import {
+  defaultSettings,
+  Settings,
+  managedSites,
+} from "@pages/popup/lib/types";
 
 let settings: Settings | null = null;
 
@@ -29,5 +33,7 @@ chrome.storage.onChanged.addListener((changes) => {
 });
 
 function updateTab(tabId: number, url: string) {
+  if (!managedSites.some((site) => url.includes(site))) return;
+
   chrome.tabs.sendMessage(tabId, { url, settings });
 }
