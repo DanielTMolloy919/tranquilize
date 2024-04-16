@@ -24,9 +24,18 @@ function processReddit(url: string, settings: Settings) {
   }
 
   const sidebarRes = document.getElementsByTagName("reddit-sidebar-nav");
+
   if (sidebarRes.length) {
     (sidebarRes[0] as HTMLElement).style.display = settings.hideSidebar
       ? "none"
       : "block";
+  }
+
+  const suggestionsRes = document.getElementsByTagName("pdp-right-rail");
+
+  if (suggestionsRes.length) {
+    (suggestionsRes[0] as HTMLElement).style.display = settings.hideSuggestions
+      ? "none"
+      : "inline";
   }
 }

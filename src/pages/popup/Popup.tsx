@@ -50,6 +50,17 @@ export default function Popup() {
         />
         <Label htmlFor="reddit-sidebar">Hide Sidebar</Label>
       </div>
+
+      <div className="flex items-center space-x-2">
+        <Switch
+          id="reddit-suggestions"
+          checked={settings.hideSuggestions}
+          onCheckedChange={(checked) => {
+            setSettings({ ...settings, hideSuggestions: checked });
+          }}
+        />
+        <Label htmlFor="reddit-suggestions">Hide Suggestions</Label>
+      </div>
     </div>
   );
 }
