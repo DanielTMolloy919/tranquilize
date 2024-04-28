@@ -9,6 +9,7 @@ window.onload = () => {
       settings = defaultSettings;
       chrome.storage.sync.set({ settings });
     }
+    processTab(settings);
   });
 };
 
