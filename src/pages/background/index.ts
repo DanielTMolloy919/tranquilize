@@ -16,9 +16,9 @@ chrome.storage.sync.get("settings", (data) => {
   settings = data.settings;
 });
 
-chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-  tab.url && updateTab(tabId, tab.url);
-});
+// chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+//   tab.url && updateTab(tabId, tab.url);
+// });
 
 chrome.storage.onChanged.addListener((changes) => {
   if (changes.settings) {
