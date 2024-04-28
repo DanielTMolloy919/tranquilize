@@ -42,13 +42,14 @@ function processTab() {
 
 function processReddit(url: string, settings: Settings) {
   const homeFeedRes = document.getElementsByClassName("subgrid-container");
-  if (
-    homeFeedRes.length &&
-    !url.includes("/comments") &&
-    !url.includes("/search")
-  ) {
+  if (homeFeedRes.length) {
+    const hideContainer =
+      settings.hideHomeFeed &&
+      !url.includes("/comments") &&
+      !url.includes("/search");
+
     (homeFeedRes[0] as HTMLElement).style.cssText = `display: ${
-      settings.hideHomeFeed ? "none" : "block"
+      hideContainer ? "none" : "block"
     } !important`;
   }
 
