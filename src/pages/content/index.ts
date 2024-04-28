@@ -55,4 +55,17 @@ function processReddit(url: string, settings: Settings) {
       settings.hideSuggestions ? "none" : "block"
     } !important`;
   }
+
+  const redditSearchRes = document.getElementsByTagName("reddit-search-large");
+  if (redditSearchRes.length) {
+    const trendingSearchRes = (
+      redditSearchRes[0] as HTMLElement
+    ).shadowRoot?.getElementById("reddit-trending-searches-partial-container");
+
+    if (trendingSearchRes) {
+      trendingSearchRes.style.cssText = `display: ${
+        settings.hideTrendingSearches ? "none" : "block"
+      } !important`;
+    }
+  }
 }

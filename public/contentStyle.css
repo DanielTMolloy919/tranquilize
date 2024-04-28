@@ -1,5 +1,6 @@
 .subgrid-container,
 reddit-sidebar-nav,
-pdp-right-rail {
+pdp-right-rail,
+#reddit-trending-searches-partial-container {
     display: none !important;
 }

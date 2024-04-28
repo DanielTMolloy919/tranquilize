@@ -61,6 +61,17 @@ export default function Popup() {
         />
         <Label htmlFor="reddit-suggestions">Hide Suggestions</Label>
       </div>
+
+      <div className="flex items-center space-x-2">
+        <Switch
+          id="reddit-trending-searches"
+          checked={settings.hideTrendingSearches}
+          onCheckedChange={(checked) => {
+            setSettings({ ...settings, hideTrendingSearches: checked });
+          }}
+        />
+        <Label htmlFor="reddit-trending-searches">Trending Searches</Label>
+      </div>
     </div>
   );
 }
