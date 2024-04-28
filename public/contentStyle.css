@@ -1,0 +1,5 @@
+.subgrid-container,
+reddit-sidebar-nav,
+pdp-right-rail {
+    display: none !important;
+}

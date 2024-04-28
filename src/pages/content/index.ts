@@ -36,9 +36,9 @@ function processReddit(url: string, settings: Settings) {
           !url.includes("/comments") &&
           !url.includes("/search")
         ) {
-          (homeFeedRes[0] as HTMLElement).style.display = settings.hideHomeFeed
-            ? "none"
-            : "block";
+          (homeFeedRes[0] as HTMLElement).style.cssText = `display: ${
+            settings.hideHomeFeed ? "none" : "block"
+          } !important`;
         }
 
         const sidebarRes = document.getElementsByTagName("reddit-sidebar-nav");
