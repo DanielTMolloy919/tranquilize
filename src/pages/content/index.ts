@@ -2,6 +2,16 @@ import { defaultSettings, Settings } from "@pages/popup/lib/types";
 
 let settings: Settings | null = null;
 
+const observer = new MutationObserver((mutationsList, observer) => {
+  for (const mutation of mutationsList) {
+    if (mutation.type === "childList") {
+      processTab();
+    }
+  }
+});
+
+observer.observe(document, { childList: true, subtree: true });
+
 window.onload = () => {
   chrome.storage.sync.get("settings", (data) => {
     settings = data.settings;
@@ -9,22 +19,22 @@ window.onload = () => {
       settings = defaultSettings;
       chrome.storage.sync.set({ settings });
     }
-    processTab(settings);
+    processTab();
   });
 };
 
 chrome.storage.onChanged.addListener((changes) => {
   if (changes.settings) {
-    processTab(changes.settings.newValue);
+    settings = changes.settings.newValue;
+    processTab();
   }
 });
 
-function processTab(settings: Settings | null) {
-  if (!settings) {
-    return;
-  }
+function processTab() {
+  if (!settings) return;
 
   const url = window.location.href;
+
   if (url.includes("reddit.com")) {
     processReddit(url, settings);
   }
