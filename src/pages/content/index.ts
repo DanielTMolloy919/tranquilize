@@ -56,16 +56,17 @@ function processReddit(url: string, settings: Settings) {
     } !important`;
   }
 
-  const redditSearchRes = document.getElementsByTagName("reddit-search-large");
-  if (redditSearchRes.length) {
-    const trendingSearchRes = (
-      redditSearchRes[0] as HTMLElement
-    ).shadowRoot?.getElementById("reddit-trending-searches-partial-container");
+  const redditSearchRes = document
+    .getElementsByTagName("reddit-search-large")[0]
+    ?.shadowRoot?.getElementById("reddit-trending-searches-partial-container");
 
-    if (trendingSearchRes) {
-      trendingSearchRes.style.cssText = `display: ${
-        settings.hideTrendingSearches ? "none" : "block"
-      } !important`;
+  if (redditSearchRes) {
+    redditSearchRes.style.cssText = `display: ${settings.hideTrendingSearches ? "none" : "block"} !important`;
+
+    // hide the title as well
+    const siblingDiv = redditSearchRes.previousElementSibling;
+    if (siblingDiv && siblingDiv instanceof HTMLElement) {
+      siblingDiv.style.cssText = `display: ${settings.hideTrendingSearches ? "none" : "block"} !important`;
     }
   }
 }
