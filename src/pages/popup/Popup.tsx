@@ -14,6 +14,25 @@ import {
   settingsDisplayNames,
 } from "@pages/popup/lib/types";
 
+type SettingSwitchProps = {
+  displayName: string;
+  checked: boolean;
+  setChecked: (value: boolean) => void;
+};
+
+function SettingSwitch({
+  displayName,
+  checked,
+  setChecked,
+}: SettingSwitchProps) {
+  return (
+    <div className="flex items-center gap-2">
+      <Label>{displayName}</Label>
+      <Switch onCheckedChange={setChecked} checked={checked} />
+    </div>
+  );
+}
+
 export default function Popup() {
   const [settings, setSettings] = useState<Settings | null>(null);
 
@@ -40,29 +59,63 @@ export default function Popup() {
 
   return (
     <div className="absolute top-0 left-0 right-0 bottom-0 text-center h-full p-3 flex flex-col gap-2">
-      <Tabs defaultValue="account" className="w-full">
+      <Tabs defaultValue="reddit" className="w-full">
         <TabsList>
-          <TabsTrigger value="account">Account</TabsTrigger>
-          <TabsTrigger value="password">Password</TabsTrigger>
+          <TabsTrigger value="reddit">Reddit</TabsTrigger>
+          <TabsTrigger value="youtube">YouTube</TabsTrigger>
         </TabsList>
-        <TabsContent value="account">
-          Make changes to your account here.
-        </TabsContent>
-        <TabsContent value="password">Change your password here.</TabsContent>
-      </Tabs>
-      <div className="flex flex-col gap-2">
-        {Object.entries(settingsDisplayNames).map(([key, displayName]) => (
-          <div key={key} className="flex items-center gap-2">
-            <Label>{displayName}</Label>
-            <Switch
-              checked={settings[key as keyof Settings]}
-              onChange={(checked) =>
-                setSettings((prev) => prev && { ...prev, [key]: checked })
+        <TabsContent value="reddit">
+          <div className="flex flex-col gap-2">
+            <SettingSwitch
+              key="reddit.hideHomeFeed"
+              displayName={settingsDisplayNames["reddit.hideHomeFeed"]}
+              checked={settings["reddit.hideHomeFeed"]}
+              setChecked={(value) =>
+                setSettings({ ...settings, "reddit.hideHomeFeed": value })
+              }
+            />
+            <SettingSwitch
+              key="reddit.hideSidebar"
+              displayName={settingsDisplayNames["reddit.hideSidebar"]}
+              checked={settings["reddit.hideSidebar"]}
+              setChecked={(value) =>
+                setSettings({ ...settings, "reddit.hideSidebar": value })
+              }
+            />
+            <SettingSwitch
+              key="reddit.hideSuggestions"
+              displayName={settingsDisplayNames["reddit.hideSuggestions"]}
+              checked={settings["reddit.hideSuggestions"]}
+              setChecked={(value) =>
+                setSettings({ ...settings, "reddit.hideSuggestions": value })
+              }
+            />
+            <SettingSwitch
+              key="reddit.hideTrendingSearches"
+              displayName={settingsDisplayNames["reddit.hideTrendingSearches"]}
+              checked={settings["reddit.hideTrendingSearches"]}
+              setChecked={(value) =>
+                setSettings({
+                  ...settings,
+                  "reddit.hideTrendingSearches": value,
+                })
               }
             />
           </div>
-        ))}
-      </div>
+        </TabsContent>
+        <TabsContent value="youtube">
+          <div className="flex flex-col gap-2">
+            <SettingSwitch
+              key="youtube.hideHomeFeed"
+              displayName={settingsDisplayNames["youtube.hideHomeFeed"]}
+              checked={settings["youtube.hideHomeFeed"]}
+              setChecked={(value) =>
+                setSettings({ ...settings, "youtube.hideHomeFeed": value })
+              }
+            />
+          </div>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }
