@@ -35,6 +35,7 @@ function SettingSwitch({
 
 export default function Popup() {
   const [settings, setSettings] = useState<Settings | null>(null);
+  const [activeTab, setActiveTab] = useState<string>("reddit");
 
   useEffect(() => {
     chrome.storage.sync.get("settings", (data) => {
@@ -44,6 +45,19 @@ export default function Popup() {
       }
 
       setSettings(data.settings);
+    });
+
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      if (!tabs[0].url) return;
+
+      const url = new URL(tabs[0].url);
+      const hostname = url.hostname;
+
+      if (hostname.includes("reddit")) {
+        setActiveTab("reddit");
+      } else if (hostname.includes("youtube")) {
+        setActiveTab("youtube");
+      }
     });
   }, []);
 
@@ -59,7 +73,7 @@ export default function Popup() {
 
   return (
     <div className="absolute top-0 left-0 right-0 bottom-0 text-center h-full p-3 flex flex-col gap-2">
-      <Tabs defaultValue="reddit" className="w-full">
+      <Tabs defaultValue={activeTab} className="w-full">
         <TabsList>
           <TabsTrigger value="reddit">Reddit</TabsTrigger>
           <TabsTrigger value="youtube">YouTube</TabsTrigger>
