@@ -1,6 +1,12 @@
+/* reddit */
 .subgrid-container,
 reddit-sidebar-nav,
 pdp-right-rail,
 #reddit-trending-searches-partial-container {
+    display: none !important;
+}
+
+/* youtube */
+ytd-rich-grid-renderer {
     display: none !important;
 }

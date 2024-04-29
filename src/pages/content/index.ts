@@ -2,15 +2,15 @@ import { defaultSettings, Settings } from "@pages/popup/lib/types";
 
 let settings: Settings | null = null;
 
-const observer = new MutationObserver((mutationsList, observer) => {
-  for (const mutation of mutationsList) {
-    if (mutation.type === "childList") {
-      processTab();
-    }
-  }
-});
+// const observer = new MutationObserver((mutationsList, observer) => {
+//   for (const mutation of mutationsList) {
+//     if (mutation.type === "childList") {
+//       processTab();
+//     }
+//   }
+// });
 
-observer.observe(document, { childList: true, subtree: true });
+// observer.observe(document, { childList: true, subtree: true });
 
 window.onload = () => {
   chrome.storage.sync.get("settings", (data) => {
@@ -37,6 +37,8 @@ function processTab() {
 
   if (url.includes("reddit.com")) {
     processReddit(url, settings);
+  } else if (url.includes("youtube.com")) {
+    processYoutube(url, settings);
   }
 }
 
@@ -79,5 +81,15 @@ function processReddit(url: string, settings: Settings) {
     if (siblingDiv && siblingDiv instanceof HTMLElement) {
       siblingDiv.style.cssText = `display: ${settings["reddit.hideTrendingSearches"] ? "none" : "block"} !important`;
     }
+  }
+}
+
+function processYoutube(url: string, settings: Settings) {
+  const homeFeedRes = document.getElementsByTagName("ytd-rich-grid-renderer");
+
+  if (homeFeedRes.length) {
+    (homeFeedRes[0] as HTMLElement).style.cssText = `display: ${
+      settings["youtube.hideHomeFeed"] ? "none" : "flex"
+    } !important`;
   }
 }
