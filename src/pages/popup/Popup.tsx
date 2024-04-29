@@ -1,22 +1,18 @@
 import { useEffect, useState } from "react";
 import { Switch } from "@pages/popup/components/ui/switch";
 import { Label } from "@pages/popup/components/ui/label";
-import { defaultSettings, Settings } from "@pages/popup/lib/types";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@pages/popup/components/ui/tabs";
 
-const settingsList = [
-  { id: "reddit-home-feed", label: "Hide All Feeds", key: "hideHomeFeed" },
-  { id: "reddit-sidebar", label: "Hide Sidebar", key: "hideSidebar" },
-  {
-    id: "reddit-suggestions",
-    label: "Hide Suggested Posts",
-    key: "hideSuggestions",
-  },
-  {
-    id: "reddit-trending-searches",
-    label: "Hide Trending Searches",
-    key: "hideTrendingSearches",
-  },
-];
+import {
+  defaultSettings,
+  Settings,
+  settingsDisplayNames,
+} from "@pages/popup/lib/types";
 
 export default function Popup() {
   const [settings, setSettings] = useState<Settings | null>(null);
@@ -44,18 +40,29 @@ export default function Popup() {
 
   return (
     <div className="absolute top-0 left-0 right-0 bottom-0 text-center h-full p-3 flex flex-col gap-2">
-      {settingsList.map(({ id, label, key }) => (
-        <div key={id} className="flex items-center space-x-2">
-          <Switch
-            id={id}
-            checked={settings[key]}
-            onCheckedChange={(checked) => {
-              setSettings({ ...settings, [key]: checked });
-            }}
-          />
-          <Label htmlFor={id}>{label}</Label>
-        </div>
-      ))}
+      <Tabs defaultValue="account" className="w-full">
+        <TabsList>
+          <TabsTrigger value="account">Account</TabsTrigger>
+          <TabsTrigger value="password">Password</TabsTrigger>
+        </TabsList>
+        <TabsContent value="account">
+          Make changes to your account here.
+        </TabsContent>
+        <TabsContent value="password">Change your password here.</TabsContent>
+      </Tabs>
+      <div className="flex flex-col gap-2">
+        {Object.entries(settingsDisplayNames).map(([key, displayName]) => (
+          <div key={key} className="flex items-center gap-2">
+            <Label>{displayName}</Label>
+            <Switch
+              checked={settings[key as keyof Settings]}
+              onChange={(checked) =>
+                setSettings((prev) => prev && { ...prev, [key]: checked })
+              }
+            />
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

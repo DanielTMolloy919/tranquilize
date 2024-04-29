@@ -1,15 +1,24 @@
 export type Settings = {
-  hideHomeFeed: boolean;
-  hideSidebar: boolean;
-  hideSuggestions: boolean;
-  hideTrendingSearches: boolean;
+  "reddit.hideHomeFeed": boolean;
+  "reddit.hideSidebar": boolean;
+  "reddit.hideSuggestions": boolean;
+  "reddit.hideTrendingSearches": boolean;
+  "youtube.hideHomeFeed": boolean;
+  // Add more settings here as needed
+};
+
+export const settingsDisplayNames: Record<keyof Settings, string> = {
+  "reddit.hideHomeFeed": "Hide All Feeds",
+  "reddit.hideSidebar": "Hide Sidebar",
+  "reddit.hideSuggestions": "Hide Suggested Posts",
+  "reddit.hideTrendingSearches": "Hide Trending Searches",
+  "youtube.hideHomeFeed": "Hide Home Feed",
 };
 
 export const defaultSettings: Settings = {
-  hideHomeFeed: true,
-  hideSidebar: true,
-  hideSuggestions: true,
-  hideTrendingSearches: true,
+  "reddit.hideHomeFeed": true,
+  "reddit.hideSidebar": true,
+  "reddit.hideSuggestions": true,
+  "reddit.hideTrendingSearches": true,
+  "youtube.hideHomeFeed": true,
 };
-
-export const managedSites = ["reddit.com"];
