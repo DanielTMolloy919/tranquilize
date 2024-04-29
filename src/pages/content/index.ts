@@ -44,7 +44,7 @@ function processReddit(url: string, settings: Settings) {
   const homeFeedRes = document.getElementsByClassName("subgrid-container");
   if (homeFeedRes.length) {
     const hideContainer =
-      settings.hideHomeFeed &&
+      settings["reddit.hideHomeFeed"] &&
       !url.includes("/comments") &&
       !url.includes("/search");
 
@@ -56,14 +56,14 @@ function processReddit(url: string, settings: Settings) {
   const sidebarRes = document.getElementsByTagName("reddit-sidebar-nav");
   if (sidebarRes.length) {
     (sidebarRes[0] as HTMLElement).style.cssText = `display: ${
-      settings.hideSidebar ? "none" : "block"
+      settings["reddit.hideSidebar"] ? "none" : "block"
     } !important`;
   }
 
   const suggestionsRes = document.getElementsByTagName("pdp-right-rail");
   if (suggestionsRes.length) {
     (suggestionsRes[0] as HTMLElement).style.cssText = `display: ${
-      settings.hideSuggestions ? "none" : "block"
+      settings["reddit.hideSuggestions"] ? "none" : "block"
     } !important`;
   }
 
@@ -72,12 +72,12 @@ function processReddit(url: string, settings: Settings) {
     ?.shadowRoot?.getElementById("reddit-trending-searches-partial-container");
 
   if (redditSearchRes) {
-    redditSearchRes.style.cssText = `display: ${settings.hideTrendingSearches ? "none" : "block"} !important`;
+    redditSearchRes.style.cssText = `display: ${settings["reddit.hideTrendingSearches"] ? "none" : "block"} !important`;
 
     // hide the title as well
     const siblingDiv = redditSearchRes.previousElementSibling;
     if (siblingDiv && siblingDiv instanceof HTMLElement) {
-      siblingDiv.style.cssText = `display: ${settings.hideTrendingSearches ? "none" : "block"} !important`;
+      siblingDiv.style.cssText = `display: ${settings["reddit.hideTrendingSearches"] ? "none" : "block"} !important`;
     }
   }
 }
