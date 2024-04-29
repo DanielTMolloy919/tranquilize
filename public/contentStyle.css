@@ -7,6 +7,7 @@ pdp-right-rail,
 }
 
 /* youtube */
-ytd-rich-grid-renderer {
+ytd-rich-grid-renderer,
+#related {
     display: none !important;
 }

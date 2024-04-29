@@ -92,4 +92,12 @@ function processYoutube(url: string, settings: Settings) {
       settings["youtube.hideHomeFeed"] ? "none" : "flex"
     } !important`;
   }
+
+  const suggestionsRes = document.getElementById("related");
+
+  if (suggestionsRes) {
+    suggestionsRes.style.cssText = `display: ${
+      settings["youtube.hideSuggestions"] ? "none" : "block"
+    } !important`;
+  }
 }

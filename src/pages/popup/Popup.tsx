@@ -127,6 +127,14 @@ export default function Popup() {
                 setSettings({ ...settings, "youtube.hideHomeFeed": value })
               }
             />
+            <SettingSwitch
+              key="youtube.hideSuggestions"
+              displayName={settingsDisplayNames["youtube.hideSuggestions"]}
+              checked={settings["youtube.hideSuggestions"]}
+              setChecked={(value) =>
+                setSettings({ ...settings, "youtube.hideSuggestions": value })
+              }
+            />
           </div>
         </TabsContent>
       </Tabs>
