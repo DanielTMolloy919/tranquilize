@@ -27,8 +27,8 @@ function SettingSwitch({
 }: SettingSwitchProps) {
   return (
     <div className="flex items-center gap-2">
-      <Label>{displayName}</Label>
       <Switch onCheckedChange={setChecked} checked={checked} />
+      <Label>{displayName}</Label>
     </div>
   );
 }
@@ -133,6 +133,14 @@ export default function Popup() {
               checked={settings["youtube.hideSuggestions"]}
               setChecked={(value) =>
                 setSettings({ ...settings, "youtube.hideSuggestions": value })
+              }
+            />
+            <SettingSwitch
+              key="youtube.hideShorts"
+              displayName={settingsDisplayNames["youtube.hideShorts"]}
+              checked={settings["youtube.hideShorts"]}
+              setChecked={(value) =>
+                setSettings({ ...settings, "youtube.hideShorts": value })
               }
             />
           </div>

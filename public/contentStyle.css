@@ -8,6 +8,8 @@ pdp-right-rail,
 
 /* youtube */
 ytd-rich-grid-renderer,
-#related {
-    display: none !important;
+#related,
+#shorts-container,
+#short-video-container {
+    visibility: hidden !important;
 }

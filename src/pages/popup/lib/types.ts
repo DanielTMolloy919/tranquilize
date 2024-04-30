@@ -5,6 +5,7 @@ export type Settings = {
   "reddit.hideTrendingSearches": boolean;
   "youtube.hideHomeFeed": boolean;
   "youtube.hideSuggestions": boolean;
+  "youtube.hideShorts": boolean;
 };
 
 export const settingsDisplayNames: Record<keyof Settings, string> = {
@@ -14,6 +15,7 @@ export const settingsDisplayNames: Record<keyof Settings, string> = {
   "reddit.hideTrendingSearches": "Hide Trending Searches",
   "youtube.hideHomeFeed": "Hide Home Feed",
   "youtube.hideSuggestions": "Hide Suggested Videos",
+  "youtube.hideShorts": "Hide Shorts",
 };
 
 export const defaultSettings: Settings = {
@@ -23,4 +25,5 @@ export const defaultSettings: Settings = {
   "reddit.hideTrendingSearches": true,
   "youtube.hideHomeFeed": true,
   "youtube.hideSuggestions": true,
+  "youtube.hideShorts": true,
 };

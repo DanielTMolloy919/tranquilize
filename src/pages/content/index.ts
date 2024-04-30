@@ -88,16 +88,32 @@ function processYoutube(url: string, settings: Settings) {
   const homeFeedRes = document.getElementsByTagName("ytd-rich-grid-renderer");
 
   if (homeFeedRes.length) {
-    (homeFeedRes[0] as HTMLElement).style.cssText = `display: ${
-      settings["youtube.hideHomeFeed"] ? "none" : "flex"
+    (homeFeedRes[0] as HTMLElement).style.cssText = `visibility: ${
+      settings["youtube.hideHomeFeed"] ? "hidden" : "visible"
     } !important`;
   }
 
   const suggestionsRes = document.getElementById("related");
 
   if (suggestionsRes) {
-    suggestionsRes.style.cssText = `display: ${
-      settings["youtube.hideSuggestions"] ? "none" : "block"
+    suggestionsRes.style.cssText = `visibility: ${
+      settings["youtube.hideSuggestions"] ? "hidden" : "visible"
     } !important`;
+  }
+
+  const shortsRes = document.getElementById("shorts-container");
+
+  if (shortsRes) {
+    shortsRes.style.cssText = `visibility: ${
+      settings["youtube.hideShorts"] ? "hidden" : "visible"
+    } !important`;
+  }
+
+  if (url.includes("/shorts") && settings["youtube.hideShorts"]) {
+    //   disable video loop
+    const videos = document.getElementsByTagName("video");
+    for (const video of videos) {
+      video.removeAttribute("src");
+    }
   }
 }
