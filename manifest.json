@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
-  "name": "<name in manifest.json>",
-  "description": "<description in manifest.json>",
+  "name": "tranquilize",
+  "description": "tranquilize",
   "background": {
     "service_worker": "src/pages/background/index.ts",
     "type": "module"

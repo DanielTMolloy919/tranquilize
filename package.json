@@ -1,13 +1,13 @@
 {
-  "name": "reddit-unhook",
-  "displayName": "reddit-unhook",
-  "version": "0.0.0",
+  "name": "tranquilize",
+  "displayName": "tranquilize",
+  "version": "0.0.1",
   "description": "",
   "type": "module",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/JohnBra/web-extension.git"
+    "url": "https://github.com/DanielTMolloy919/tranquilize.git"
   },
   "scripts": {
     "build": "vite build",
