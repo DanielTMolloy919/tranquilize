@@ -40,22 +40,22 @@ function processReddit(url: string, settings: Settings) {
       !url.includes("/comments") &&
       !url.includes("/search");
 
-    (homeFeedRes[0] as HTMLElement).style.cssText = `visibility: ${
-      hideContainer ? "hidden" : "visible"
+    (homeFeedRes[0] as HTMLElement).style.cssText = `display: ${
+      hideContainer ? "none" : "block"
     } !important`;
   }
 
   const sidebarRes = document.getElementsByTagName("reddit-sidebar-nav");
   if (sidebarRes.length) {
-    (sidebarRes[0] as HTMLElement).style.cssText = `visibility: ${
-      settings["reddit.hideSidebar"] ? "hidden" : "visible"
+    (sidebarRes[0] as HTMLElement).style.cssText = `display: ${
+      settings["reddit.hideSidebar"] ? "none" : "block"
     } !important`;
   }
 
   const suggestionsRes = document.getElementsByTagName("pdp-right-rail");
   if (suggestionsRes.length) {
-    (suggestionsRes[0] as HTMLElement).style.cssText = `visibility: ${
-      settings["reddit.hideSuggestions"] ? "hidden" : "visible"
+    (suggestionsRes[0] as HTMLElement).style.cssText = `display: ${
+      settings["reddit.hideSuggestions"] ? "none" : "block"
     } !important`;
   }
 
@@ -64,12 +64,12 @@ function processReddit(url: string, settings: Settings) {
     ?.shadowRoot?.getElementById("reddit-trending-searches-partial-container");
 
   if (redditSearchRes) {
-    redditSearchRes.style.cssText = `visibility: ${settings["reddit.hideTrendingSearches"] ? "hidden" : "visible"} !important`;
+    redditSearchRes.style.cssText = `display: ${settings["reddit.hideTrendingSearches"] ? "none" : "block"} !important`;
 
     // hide the title as well
     const siblingDiv = redditSearchRes.previousElementSibling;
     if (siblingDiv && siblingDiv instanceof HTMLElement) {
-      siblingDiv.style.cssText = `visibility: ${settings["reddit.hideTrendingSearches"] ? "hidden" : "visible"} !important`;
+      siblingDiv.style.cssText = `display: ${settings["reddit.hideTrendingSearches"] ? "none" : "block"} !important`;
     }
   }
 }
@@ -88,14 +88,6 @@ function processYoutube(url: string, settings: Settings) {
   if (suggestionsRes) {
     suggestionsRes.style.cssText = `visibility: ${
       settings["youtube.hideSuggestions"] ? "hidden" : "visible"
-    } !important`;
-  }
-
-  const shortsRes = document.getElementById("shorts-container");
-
-  if (shortsRes) {
-    shortsRes.style.cssText = `visibility: ${
-      settings["youtube.hideShorts"] ? "hidden" : "visible"
     } !important`;
   }
 }

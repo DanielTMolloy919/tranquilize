@@ -3,7 +3,7 @@
 reddit-sidebar-nav,
 pdp-right-rail,
 #reddit-trending-searches-partial-container {
-    visibility: hidden !important;
+    display: none !important;
 }
 
 /* youtube */
