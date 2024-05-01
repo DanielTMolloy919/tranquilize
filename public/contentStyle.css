@@ -7,9 +7,12 @@ pdp-right-rail,
 }
 
 /* youtube */
-ytd-rich-grid-renderer,
 #related,
 #shorts-container,
 #short-video-container {
     visibility: hidden !important;
+}
+
+ytd-rich-grid-renderer {
+    display: none !important;
 }

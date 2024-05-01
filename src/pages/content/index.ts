@@ -99,8 +99,8 @@ function processYoutube(url: string, settings: Settings) {
   const homeFeedRes = document.getElementsByTagName("ytd-rich-grid-renderer");
 
   if (homeFeedRes.length) {
-    (homeFeedRes[0] as HTMLElement).style.cssText = `visibility: ${
-      settings["youtube.hideHomeFeed"] ? "hidden" : "visible"
+    (homeFeedRes[0] as HTMLElement).style.cssText = `display: ${
+      settings["youtube.hideHomeFeed"] ? "none" : "flex"
     } !important`;
   }
 
