@@ -9,7 +9,8 @@ pdp-right-rail,
 /* youtube */
 #related,
 #shorts-container,
-#short-video-container {
+#short-video-container,
+#guide-content {
     visibility: hidden !important;
 }
 

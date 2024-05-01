@@ -128,6 +128,14 @@ export default function Popup() {
               }
             />
             <SettingSwitch
+              key="youtube.hideSidebar"
+              displayName={settingsDisplayNames["youtube.hideSidebar"]}
+              checked={settings["youtube.hideSidebar"]}
+              setChecked={(value) =>
+                setSettings({ ...settings, "youtube.hideSidebar": value })
+              }
+            />
+            <SettingSwitch
               key="youtube.hideSuggestions"
               displayName={settingsDisplayNames["youtube.hideSuggestions"]}
               checked={settings["youtube.hideSuggestions"]}

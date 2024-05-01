@@ -90,4 +90,12 @@ function processYoutube(url: string, settings: Settings) {
       settings["youtube.hideSuggestions"] ? "hidden" : "visible"
     } !important`;
   }
+
+  const sidebarRes = document.getElementById("guide-content");
+
+  if (sidebarRes) {
+    sidebarRes.style.cssText = `visibility: ${
+      settings["youtube.hideSidebar"] ? "hidden" : "visible"
+    } !important`;
+  }
 }
