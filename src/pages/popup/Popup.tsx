@@ -135,14 +135,6 @@ export default function Popup() {
                 setSettings({ ...settings, "youtube.hideSuggestions": value })
               }
             />
-            <SettingSwitch
-              key="youtube.hideShorts"
-              displayName={settingsDisplayNames["youtube.hideShorts"]}
-              checked={settings["youtube.hideShorts"]}
-              setChecked={(value) =>
-                setSettings({ ...settings, "youtube.hideShorts": value })
-              }
-            />
           </div>
         </TabsContent>
       </Tabs>

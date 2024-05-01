@@ -11,27 +11,6 @@ window.onload = () => {
     }
     processTab();
   });
-
-  // const observer = new MutationObserver((mutationsList, observer) => {
-  //   for (const mutation of mutationsList) {
-  //     if (mutation.type === "childList") {
-  //       const url = window.location.href;
-  //       if (
-  //         url.includes("youtube.com") &&
-  //         url.includes("/shorts") &&
-  //         settings["youtube.hideShorts"]
-  //       ) {
-  //         //   disable video loop
-  //         const videos = document.getElementsByTagName("video");
-  //         for (const video of videos) {
-  //           video.removeAttribute("src");
-  //         }
-  //       }
-  //     }
-  //   }
-  // });
-  //
-  // observer.observe(document, { childList: true, subtree: true });
 };
 
 chrome.storage.onChanged.addListener((changes) => {
@@ -119,33 +98,4 @@ function processYoutube(url: string, settings: Settings) {
       settings["youtube.hideShorts"] ? "hidden" : "visible"
     } !important`;
   }
-
-  if (url.includes("/shorts") && settings["youtube.hideShorts"]) {
-    //   disable video loop
-    const videos = document.getElementsByTagName("video");
-    for (const video of videos) {
-      handleVideoElement(video);
-    }
-  }
-}
-
-function handleVideoElement(e: HTMLVideoElement) {
-  if (!e) return;
-
-  console.log("handleVideoElement", e);
-
-  if (e.readyState > 0) {
-    console.log("readyState > 0", e);
-    e.pause();
-    return;
-  }
-  const handleLoadStart = () => {
-    console.log("handleLoadStart", e);
-    e.pause();
-    e.removeEventListener("canplay", handleLoadStart);
-    e.removeEventListener("loadstart", handleLoadStart);
-  };
-
-  e.addEventListener("canplay", handleLoadStart);
-  e.addEventListener("loadstart", handleLoadStart);
 }
