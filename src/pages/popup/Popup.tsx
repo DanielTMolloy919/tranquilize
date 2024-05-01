@@ -71,8 +71,12 @@ export default function Popup() {
     return null;
   }
 
+  function openLink(href: string) {
+    chrome.tabs.create({ url: href });
+  }
+
   return (
-    <div className="absolute top-0 left-0 right-0 bottom-0 text-center h-full p-3 flex flex-col gap-2">
+    <div className="absolute top-0 left-0 right-0 bottom-0 text-center h-full p-3 flex flex-col gap-2 justify-between">
       <Tabs defaultValue={activeTab} className="w-full">
         <TabsList>
           <TabsTrigger value="reddit">Reddit</TabsTrigger>
@@ -146,6 +150,13 @@ export default function Popup() {
           </div>
         </TabsContent>
       </Tabs>
+      <button
+        onClick={() =>
+          openLink("https://github.com/DanielTMolloy919/reddit-unhook")
+        }
+      >
+        GitHub
+      </button>
     </div>
   );
 }
