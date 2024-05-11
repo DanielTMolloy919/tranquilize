@@ -41,6 +41,7 @@ function processReddit(url: string, settings: Settings) {
     .replace(/\/$/, "") // trailing slash
     .replace(/https?:\/\//, "") // protocol
     .replace("www.", ""); // www
+
   const isHomeFeed =
     strippedUrl === "reddit.com" ||
     strippedUrl === "reddit.com/r/all" ||
@@ -61,15 +62,10 @@ function processReddit(url: string, settings: Settings) {
 
   processElement("pdp-right-rail", settings["reddit.hideSuggestions"]);
 
-  processElement(
-    "reddit-search-large",
-    settings["reddit.hideTrendingSearches"],
-  );
-
   const redditSearchRes = document
     .getElementsByTagName("reddit-search-large")[0]
     ?.shadowRoot?.getElementById("reddit-trending-searches-partial-container");
-  //
+
   if (redditSearchRes) {
     processElement(redditSearchRes, settings["reddit.hideTrendingSearches"]);
 
