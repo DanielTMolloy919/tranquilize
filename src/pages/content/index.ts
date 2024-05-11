@@ -54,53 +54,42 @@ function processReddit(url: string, settings: Settings) {
 
     const shouldHideHomeFeeds = settings["reddit.hideHomeFeed"] && isHomeFeed;
 
-    (homeFeedRes[0] as HTMLElement).style.cssText = `display: ${
-      shouldHideHomeFeeds ? "none" : "block"
-    } !important`;
-
-    console.log("shouldHideHomeFeeds", shouldHideHomeFeeds);
-    console.log("cssText", (homeFeedRes[0] as HTMLElement).style.cssText);
+    setHTMLElement(homeFeedRes[0] as HTMLElement, shouldHideHomeFeeds);
   }
 
   const subredditMainContent = document.querySelector(
     "#main-content > div:last-of-type",
   );
 
-  console.log("subredditMainContent", subredditMainContent);
   if (subredditMainContent) {
     const isSubreddit = strippedUrl.includes("reddit.com/r/");
 
     const shouldHideSubreddits =
       settings["reddit.hideSubreddits"] && isSubreddit;
 
-    (subredditMainContent as HTMLElement).style.cssText = `display: ${
-      shouldHideSubreddits ? "none" : "block"
-    } !important`;
-
-    console.log("shouldHideSubreddits", shouldHideSubreddits);
-    console.log("cssText", (subredditMainContent as HTMLElement).style.cssText);
+    setHTMLElement(subredditMainContent as HTMLElement, shouldHideSubreddits);
   }
 
   const sidebarRes = document.getElementsByTagName("reddit-sidebar-nav");
   if (sidebarRes.length) {
-    (sidebarRes[0] as HTMLElement).style.cssText = `display: ${
-      settings["reddit.hideSidebar"] ? "none" : "block"
-    } !important`;
+    setHTMLElement(
+      sidebarRes[0] as HTMLElement,
+      settings["reddit.hideSidebar"],
+    );
   }
 
   const sidebarButtonRes = document.getElementById("guide-button");
 
   if (sidebarButtonRes) {
-    sidebarButtonRes.style.cssText = `display: ${
-      settings["youtube.hideSidebar"] ? "none" : "block"
-    } !important`;
+    setHTMLElement(sidebarButtonRes, settings["reddit.hideSidebar"]);
   }
 
   const suggestionsRes = document.getElementsByTagName("pdp-right-rail");
   if (suggestionsRes.length) {
-    (suggestionsRes[0] as HTMLElement).style.cssText = `display: ${
-      settings["reddit.hideSuggestions"] ? "none" : "block"
-    } !important`;
+    setHTMLElement(
+      suggestionsRes[0] as HTMLElement,
+      settings["reddit.hideSuggestions"],
+    );
   }
 
   const redditSearchRes = document
@@ -108,12 +97,12 @@ function processReddit(url: string, settings: Settings) {
     ?.shadowRoot?.getElementById("reddit-trending-searches-partial-container");
 
   if (redditSearchRes) {
-    redditSearchRes.style.cssText = `display: ${settings["reddit.hideTrendingSearches"] ? "none" : "block"} !important`;
+    setHTMLElement(redditSearchRes, settings["reddit.hideTrendingSearches"]);
 
     // hide the title as well
     const siblingDiv = redditSearchRes.previousElementSibling;
     if (siblingDiv && siblingDiv instanceof HTMLElement) {
-      siblingDiv.style.cssText = `display: ${settings["reddit.hideTrendingSearches"] ? "none" : "block"} !important`;
+      setHTMLElement(siblingDiv, settings["reddit.hideTrendingSearches"]);
     }
   }
 }
@@ -122,24 +111,40 @@ function processYoutube(url: string, settings: Settings) {
   const homeFeedRes = document.getElementsByTagName("ytd-rich-grid-renderer");
 
   if (homeFeedRes.length) {
-    (homeFeedRes[0] as HTMLElement).style.cssText = `display: ${
-      settings["youtube.hideHomeFeed"] ? "none" : "flex"
-    } !important`;
+    setHTMLElement(
+      homeFeedRes[0] as HTMLElement,
+      settings["youtube.hideHomeFeed"],
+      "display-flex",
+    );
   }
 
   const suggestionsRes = document.getElementById("related");
 
   if (suggestionsRes) {
-    suggestionsRes.style.cssText = `visibility: ${
-      settings["youtube.hideSuggestions"] ? "hidden" : "visible"
-    } !important`;
+    setHTMLElement(
+      suggestionsRes,
+      settings["youtube.hideSuggestions"],
+      "visibility",
+    );
   }
 
   const sidebarRes = document.getElementById("guide-content");
 
   if (sidebarRes) {
-    sidebarRes.style.cssText = `visibility: ${
-      settings["youtube.hideSidebar"] ? "hidden" : "visible"
-    } !important`;
+    setHTMLElement(sidebarRes, settings["youtube.hideSidebar"], "visibility");
+  }
+}
+
+function setHTMLElement(
+  element: HTMLElement,
+  shouldHide: boolean,
+  type: "display-block" | "display-flex" | "visibility" = "display-block",
+) {
+  if (type === "display-block") {
+    element.style.cssText = `display: ${shouldHide ? "none" : "block"} !important`;
+  } else if (type === "display-flex") {
+    element.style.cssText = `display: ${shouldHide ? "none" : "flex"} !important`;
+  } else {
+    element.style.cssText = `visibility: ${shouldHide ? "hidden" : "visible"} !important`;
   }
 }
