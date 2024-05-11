@@ -40,6 +40,8 @@ function processTab() {
 
 function processReddit(url: string, settings: Settings) {
   const homeFeedRes = document.getElementsByClassName("subgrid-container");
+  console.log("homeFeedRes", homeFeedRes);
+
   if (homeFeedRes.length) {
     const hideContainer =
       settings["reddit.hideHomeFeed"] &&
@@ -49,6 +51,9 @@ function processReddit(url: string, settings: Settings) {
     (homeFeedRes[0] as HTMLElement).style.cssText = `display: ${
       hideContainer ? "none" : "block"
     } !important`;
+
+    console.log("hideContainer", hideContainer);
+    console.log("cssText", (homeFeedRes[0] as HTMLElement).style.cssText);
   }
 
   const sidebarRes = document.getElementsByTagName("reddit-sidebar-nav");
