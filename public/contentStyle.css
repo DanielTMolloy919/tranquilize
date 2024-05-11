@@ -14,6 +14,7 @@ pdp-right-rail,
     visibility: hidden !important;
 }
 
-ytd-rich-grid-renderer {
+ytd-rich-grid-renderer,
+#guide-button {
     display: none !important;
 }

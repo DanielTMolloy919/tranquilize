@@ -88,6 +88,14 @@ function processReddit(url: string, settings: Settings) {
     } !important`;
   }
 
+  const sidebarButtonRes = document.getElementById("guide-button");
+
+  if (sidebarButtonRes) {
+    sidebarButtonRes.style.cssText = `display: ${
+      settings["youtube.hideSidebar"] ? "none" : "block"
+    } !important`;
+  }
+
   const suggestionsRes = document.getElementsByTagName("pdp-right-rail");
   if (suggestionsRes.length) {
     (suggestionsRes[0] as HTMLElement).style.cssText = `display: ${
