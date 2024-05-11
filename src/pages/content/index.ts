@@ -39,15 +39,15 @@ function processTab() {
 }
 
 function processReddit(url: string, settings: Settings) {
-  const feedRes = document.getElementsByClassName("subgrid-container");
-  console.log("homeFeedRes", feedRes);
+  const strippedUrl = url
+    .replace(/\/$/, "") // trailing slash
+    .replace(/https?:\/\//, "") // protocol
+    .replace("www.", ""); // www
 
-  if (feedRes.length) {
-    const strippedUrl = url
-      .replace(/\/$/, "") // trailing slash
-      .replace(/https?:\/\//, "") // protocol
-      .replace("www.", ""); // www
+  const homeFeedRes = document.getElementsByClassName("subgrid-container");
+  console.log("homeFeedRes", homeFeedRes);
 
+  if (homeFeedRes.length) {
     const isHomeFeed =
       strippedUrl === "reddit.com" ||
       strippedUrl === "reddit.com/r/all" ||
@@ -56,18 +56,31 @@ function processReddit(url: string, settings: Settings) {
 
     const shouldHideHomeFeeds = settings["reddit.hideHomeFeed"] && isHomeFeed;
 
+    (homeFeedRes[0] as HTMLElement).style.cssText = `display: ${
+      shouldHideHomeFeeds ? "none" : "block"
+    } !important`;
+
+    console.log("shouldHideHomeFeeds", shouldHideHomeFeeds);
+    console.log("cssText", (homeFeedRes[0] as HTMLElement).style.cssText);
+  }
+
+  const subredditMainContent = document.querySelector(
+    "#main-content > div:last-of-type",
+  );
+
+  console.log("subredditMainContent", subredditMainContent);
+  if (subredditMainContent) {
     const isSubreddit = strippedUrl.includes("reddit.com/r/");
 
     const shouldHideSubreddits =
       settings["reddit.hideSubreddits"] && isSubreddit;
 
-    (feedRes[0] as HTMLElement).style.cssText = `display: ${
-      shouldHideHomeFeeds || shouldHideSubreddits ? "none" : "block"
+    (subredditMainContent as HTMLElement).style.cssText = `display: ${
+      shouldHideSubreddits ? "none" : "block"
     } !important`;
 
-    console.log("shouldHideHomeFeeds", shouldHideHomeFeeds);
     console.log("shouldHideSubreddits", shouldHideSubreddits);
-    console.log("cssText", (feedRes[0] as HTMLElement).style.cssText);
+    console.log("cssText", (subredditMainContent as HTMLElement).style.cssText);
   }
 
   const sidebarRes = document.getElementsByTagName("reddit-sidebar-nav");
