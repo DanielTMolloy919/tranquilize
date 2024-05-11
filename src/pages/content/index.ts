@@ -58,7 +58,6 @@ function processReddit(url: string, settings: Settings) {
   processElement("#main-content > div:last-of-type", shouldHideSubreddits);
 
   processElement("reddit-sidebar-nav", settings["reddit.hideSidebar"]);
-  processElement("#guide-button", settings["reddit.hideSidebar"]);
 
   processElement("pdp-right-rail", settings["reddit.hideSuggestions"]);
 
@@ -91,6 +90,8 @@ function processYoutube(url: string, settings: Settings) {
     settings["youtube.hideSidebar"],
     "visibility",
   );
+  processElement("#guide-button", settings["youtube.hideSidebar"]);
+  processElement("ytd-mini-guide-renderer", settings["youtube.hideSidebar"]);
 }
 
 function processElement(
