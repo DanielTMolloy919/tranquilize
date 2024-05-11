@@ -39,21 +39,35 @@ function processTab() {
 }
 
 function processReddit(url: string, settings: Settings) {
-  const homeFeedRes = document.getElementsByClassName("subgrid-container");
-  console.log("homeFeedRes", homeFeedRes);
+  const feedRes = document.getElementsByClassName("subgrid-container");
+  console.log("homeFeedRes", feedRes);
 
-  if (homeFeedRes.length) {
-    const hideContainer =
-      settings["reddit.hideHomeFeed"] &&
-      !url.includes("/comments") &&
-      !url.includes("/search");
+  if (feedRes.length) {
+    const strippedUrl = url
+      .replace(/\/$/, "") // trailing slash
+      .replace(/https?:\/\//, "") // protocol
+      .replace("www.", ""); // www
 
-    (homeFeedRes[0] as HTMLElement).style.cssText = `display: ${
-      hideContainer ? "none" : "block"
+    const isHomeFeed =
+      strippedUrl === "reddit.com" ||
+      strippedUrl === "reddit.com/r/all" ||
+      strippedUrl === "reddit.com/r/popular" ||
+      strippedUrl === "reddit.com/?feed=home";
+
+    const shouldHideHomeFeeds = settings["reddit.hideHomeFeed"] && isHomeFeed;
+
+    const isSubreddit = strippedUrl.includes("reddit.com/r/");
+
+    const shouldHideSubreddits =
+      settings["reddit.hideSubreddits"] && isSubreddit;
+
+    (feedRes[0] as HTMLElement).style.cssText = `display: ${
+      shouldHideHomeFeeds || shouldHideSubreddits ? "none" : "block"
     } !important`;
 
-    console.log("hideContainer", hideContainer);
-    console.log("cssText", (homeFeedRes[0] as HTMLElement).style.cssText);
+    console.log("shouldHideHomeFeeds", shouldHideHomeFeeds);
+    console.log("shouldHideSubreddits", shouldHideSubreddits);
+    console.log("cssText", (feedRes[0] as HTMLElement).style.cssText);
   }
 
   const sidebarRes = document.getElementsByTagName("reddit-sidebar-nav");

@@ -1,5 +1,6 @@
 export type Settings = {
   "reddit.hideHomeFeed": boolean;
+  "reddit.hideSubreddits": boolean;
   "reddit.hideSidebar": boolean;
   "reddit.hideSuggestions": boolean;
   "reddit.hideTrendingSearches": boolean;
@@ -9,7 +10,8 @@ export type Settings = {
 };
 
 export const settingsDisplayNames: Record<keyof Settings, string> = {
-  "reddit.hideHomeFeed": "Hide All Feeds",
+  "reddit.hideHomeFeed": "Hide Home Feeds",
+  "reddit.hideSubreddits": "Hide Subreddit Feeds",
   "reddit.hideSidebar": "Hide Sidebar",
   "reddit.hideSuggestions": "Hide Suggested Posts",
   "reddit.hideTrendingSearches": "Hide Trending Searches",
@@ -20,6 +22,7 @@ export const settingsDisplayNames: Record<keyof Settings, string> = {
 
 export const defaultSettings: Settings = {
   "reddit.hideHomeFeed": true,
+  "reddit.hideSubreddits": true,
   "reddit.hideSidebar": true,
   "reddit.hideSuggestions": true,
   "reddit.hideTrendingSearches": true,

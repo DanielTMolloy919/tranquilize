@@ -9,6 +9,7 @@ chrome.runtime.onInstalled.addListener(() => {
 });
 
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+  console.log("onUpdated changeInfo", changeInfo);
   if (changeInfo.status === "complete" && tab.active) {
     chrome.tabs.sendMessage(tabId, { message: "processTab" });
   }

@@ -135,6 +135,14 @@ export default function Popup() {
                 }
               />
               <SettingSwitch
+                key="reddit.hideSubreddits"
+                displayName={settingsDisplayNames["reddit.hideSubreddits"]}
+                checked={settings["reddit.hideSubreddits"]}
+                setChecked={(value) =>
+                  setSettings({ ...settings, "reddit.hideSubreddits": value })
+                }
+              />
+              <SettingSwitch
                 key="reddit.hideSidebar"
                 displayName={settingsDisplayNames["reddit.hideSidebar"]}
                 checked={settings["reddit.hideSidebar"]}
