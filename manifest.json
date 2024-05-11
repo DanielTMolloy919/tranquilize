@@ -18,10 +18,12 @@
   "permissions": [
     "storage",
     "tabs",
-    "activeTab"
+    "activeTab",
+    "webNavigation"
   ],
   "content_scripts": [
     {
+      "run_at": "document_end",
       "matches": [
         "http://*/*",
         "https://*/*",

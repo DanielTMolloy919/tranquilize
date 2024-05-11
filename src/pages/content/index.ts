@@ -2,16 +2,14 @@ import { defaultSettings, Settings } from "@pages/popup/lib/types";
 
 let settings: Settings | null = null;
 
-window.onload = () => {
-  chrome.storage.sync.get("settings", (data) => {
-    settings = data.settings;
-    if (!settings) {
-      settings = defaultSettings;
-      chrome.storage.sync.set({ settings });
-    }
-    processTab();
-  });
-};
+chrome.storage.sync.get("settings", (data) => {
+  settings = data.settings;
+  if (!settings) {
+    settings = defaultSettings;
+    chrome.storage.sync.set({ settings });
+  }
+  processTab();
+});
 
 chrome.storage.onChanged.addListener((changes) => {
   if (changes.settings) {
