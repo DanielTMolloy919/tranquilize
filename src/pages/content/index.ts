@@ -41,105 +41,74 @@ function processReddit(url: string, settings: Settings) {
     .replace(/\/$/, "") // trailing slash
     .replace(/https?:\/\//, "") // protocol
     .replace("www.", ""); // www
+  const isHomeFeed =
+    strippedUrl === "reddit.com" ||
+    strippedUrl === "reddit.com/r/all" ||
+    strippedUrl === "reddit.com/r/popular" ||
+    strippedUrl === "reddit.com/?feed=home";
 
-  const homeFeedRes = document.getElementsByClassName("subgrid-container");
-  console.log("homeFeedRes", homeFeedRes);
+  const shouldHideHomeFeeds = settings["reddit.hideHomeFeed"] && isHomeFeed;
 
-  if (homeFeedRes.length) {
-    const isHomeFeed =
-      strippedUrl === "reddit.com" ||
-      strippedUrl === "reddit.com/r/all" ||
-      strippedUrl === "reddit.com/r/popular" ||
-      strippedUrl === "reddit.com/?feed=home";
+  processElement(".subgrid-container", shouldHideHomeFeeds);
 
-    const shouldHideHomeFeeds = settings["reddit.hideHomeFeed"] && isHomeFeed;
+  const shouldHideSubreddits =
+    settings["reddit.hideSubreddits"] && strippedUrl.includes("reddit.com/r/");
 
-    setHTMLElement(homeFeedRes[0] as HTMLElement, shouldHideHomeFeeds);
-  }
+  processElement("#main-content > div:last-of-type", shouldHideSubreddits);
 
-  const subredditMainContent = document.querySelector(
-    "#main-content > div:last-of-type",
+  processElement("reddit-sidebar-nav", settings["reddit.hideSidebar"]);
+  processElement("#guide-button", settings["reddit.hideSidebar"]);
+
+  processElement("pdp-right-rail", settings["reddit.hideSuggestions"]);
+
+  processElement(
+    "reddit-search-large",
+    settings["reddit.hideTrendingSearches"],
   );
-
-  if (subredditMainContent) {
-    const isSubreddit = strippedUrl.includes("reddit.com/r/");
-
-    const shouldHideSubreddits =
-      settings["reddit.hideSubreddits"] && isSubreddit;
-
-    setHTMLElement(subredditMainContent as HTMLElement, shouldHideSubreddits);
-  }
-
-  const sidebarRes = document.getElementsByTagName("reddit-sidebar-nav");
-  if (sidebarRes.length) {
-    setHTMLElement(
-      sidebarRes[0] as HTMLElement,
-      settings["reddit.hideSidebar"],
-    );
-  }
-
-  const sidebarButtonRes = document.getElementById("guide-button");
-
-  if (sidebarButtonRes) {
-    setHTMLElement(sidebarButtonRes, settings["reddit.hideSidebar"]);
-  }
-
-  const suggestionsRes = document.getElementsByTagName("pdp-right-rail");
-  if (suggestionsRes.length) {
-    setHTMLElement(
-      suggestionsRes[0] as HTMLElement,
-      settings["reddit.hideSuggestions"],
-    );
-  }
 
   const redditSearchRes = document
     .getElementsByTagName("reddit-search-large")[0]
     ?.shadowRoot?.getElementById("reddit-trending-searches-partial-container");
-
+  //
   if (redditSearchRes) {
-    setHTMLElement(redditSearchRes, settings["reddit.hideTrendingSearches"]);
+    processElement(redditSearchRes, settings["reddit.hideTrendingSearches"]);
 
     // hide the title as well
     const siblingDiv = redditSearchRes.previousElementSibling;
     if (siblingDiv && siblingDiv instanceof HTMLElement) {
-      setHTMLElement(siblingDiv, settings["reddit.hideTrendingSearches"]);
+      processElement(siblingDiv, settings["reddit.hideTrendingSearches"]);
     }
   }
 }
 
 function processYoutube(url: string, settings: Settings) {
-  const homeFeedRes = document.getElementsByTagName("ytd-rich-grid-renderer");
+  processElement(
+    "ytd-rich-grid-renderer",
+    settings["youtube.hideHomeFeed"],
+    "display-flex",
+  );
 
-  if (homeFeedRes.length) {
-    setHTMLElement(
-      homeFeedRes[0] as HTMLElement,
-      settings["youtube.hideHomeFeed"],
-      "display-flex",
-    );
-  }
+  processElement("#related", settings["youtube.hideSuggestions"], "visibility");
 
-  const suggestionsRes = document.getElementById("related");
-
-  if (suggestionsRes) {
-    setHTMLElement(
-      suggestionsRes,
-      settings["youtube.hideSuggestions"],
-      "visibility",
-    );
-  }
-
-  const sidebarRes = document.getElementById("guide-content");
-
-  if (sidebarRes) {
-    setHTMLElement(sidebarRes, settings["youtube.hideSidebar"], "visibility");
-  }
+  processElement(
+    "#guide-content",
+    settings["youtube.hideSidebar"],
+    "visibility",
+  );
 }
 
-function setHTMLElement(
-  element: HTMLElement,
+function processElement(
+  _element: string | HTMLElement,
   shouldHide: boolean,
   type: "display-block" | "display-flex" | "visibility" = "display-block",
 ) {
+  const element =
+    typeof _element === "string"
+      ? (document.querySelector(_element) as HTMLElement)
+      : _element;
+
+  if (!element) return;
+
   if (type === "display-block") {
     element.style.cssText = `display: ${shouldHide ? "none" : "block"} !important`;
   } else if (type === "display-flex") {
