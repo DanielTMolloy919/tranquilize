@@ -53,7 +53,9 @@ function processReddit(url: string, settings: Settings) {
   processElement(".subgrid-container", shouldHideHomeFeeds);
 
   const shouldHideSubreddits =
-    settings["reddit.hideSubreddits"] && strippedUrl.includes("reddit.com/r/");
+    settings["reddit.hideSubreddits"] &&
+    strippedUrl.includes("reddit.com/r/") &&
+    !strippedUrl.includes("/comments");
 
   processElement("#main-content > div:last-of-type", shouldHideSubreddits);
 
