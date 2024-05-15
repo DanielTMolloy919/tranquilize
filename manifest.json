@@ -21,12 +21,11 @@
   ],
   "content_scripts": [
     {
-      "run_at": "document_end",
       "matches": [
-        "http://*/*",
-        "https://*/*",
-        "<all_urls>"
+        "https://*.youtube.com/*",
+        "https://*.reddit.com/*"
       ],
+      "run_at": "document_end",
       "js": [
         "src/pages/content/index.ts"
       ],
