@@ -205,7 +205,7 @@ export default function Popup() {
 
         <button
           onClick={() =>
-            openLink("https://github.com/DanielTMolloy919/reddit-unhook")
+            openLink("https://github.com/DanielTMolloy919/tranquilize")
           }
         >
           GitHub
