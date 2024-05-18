@@ -44,15 +44,18 @@ function processReddit(url: string, settings: Settings) {
     .replace(/https?:\/\//, "") // protocol
     .replace("www.", ""); // www
 
+  const homeSubPages = [
+    "hot",
+    "top",
+    "rising",
+    "best",
+    "new",
+    "r/popular",
+    "r/all",
+  ];
   const isHomeFeed =
     strippedUrl === "reddit.com" ||
-    strippedUrl.startsWith("reddit.com/hot") ||
-    strippedUrl.startsWith("reddit.com/top") ||
-    strippedUrl.startsWith("reddit.com/rising") ||
-    strippedUrl.startsWith("reddit.com/best") ||
-    strippedUrl.startsWith("reddit.com/new") ||
-    strippedUrl.startsWith("reddit.com/r/popular") ||
-    strippedUrl.startsWith("reddit.com/r/all");
+    homeSubPages.some((page) => strippedUrl.startsWith(`reddit.com/${page}`));
 
   processElement(
     ".subgrid-container",
