@@ -60,11 +60,7 @@ function processReddit(url: string, settings: Settings) {
   );
 
   const isSubredditFeed =
-    /^reddit.com\/r\/[^\/]+$/.test(strippedUrl) ||
-    /^reddit.com\/r\/[^\/]+\/hot$/.test(strippedUrl) ||
-    /^reddit.com\/r\/[^\/]+\/new$/.test(strippedUrl) ||
-    /^reddit.com\/r\/[^\/]+\/top$/.test(strippedUrl) ||
-    /^reddit.com\/r\/[^\/]+\/rising$/.test(strippedUrl);
+    /^reddit.com\/r\/[^\/]+(\/hot|\/new|\/top|\/rising)?$/.test(strippedUrl);
 
   processElement(
     "#main-content > div:last-of-type",
