@@ -37,14 +37,15 @@ function processTab() {
 }
 
 function processReddit(url: string, settings: Settings) {
-  const strippedUrl = url
+  const urlObject = new URL(url);
+  let strippedUrl = urlObject.origin + urlObject.pathname; // remove query params
+  strippedUrl = strippedUrl
     .replace(/\/$/, "") // trailing slash
     .replace(/https?:\/\//, "") // protocol
     .replace("www.", ""); // www
 
   const isHomeFeed =
     strippedUrl === "reddit.com" ||
-    strippedUrl.startsWith("reddit.com/?") ||
     strippedUrl.startsWith("reddit.com/hot") ||
     strippedUrl.startsWith("reddit.com/top") ||
     strippedUrl.startsWith("reddit.com/rising") ||
@@ -58,13 +59,17 @@ function processReddit(url: string, settings: Settings) {
     settings["reddit.hideHomeFeed"] && isHomeFeed,
   );
 
-  const shouldHideSubreddits =
-    settings["reddit.hideSubreddits"] &&
-    strippedUrl.includes("reddit.com/r/") &&
-    !strippedUrl.includes("/comments") &&
-    !strippedUrl.includes("/wiki");
+  const isSubredditFeed =
+    /^reddit.com\/r\/[^\/]+$/.test(strippedUrl) ||
+    /^reddit.com\/r\/[^\/]+\/hot$/.test(strippedUrl) ||
+    /^reddit.com\/r\/[^\/]+\/new$/.test(strippedUrl) ||
+    /^reddit.com\/r\/[^\/]+\/top$/.test(strippedUrl) ||
+    /^reddit.com\/r\/[^\/]+\/rising$/.test(strippedUrl);
 
-  processElement("#main-content > div:last-of-type", shouldHideSubreddits);
+  processElement(
+    "#main-content > div:last-of-type",
+    settings["reddit.hideSubreddits"] && isSubredditFeed,
+  );
 
   processElement("reddit-sidebar-nav", settings["reddit.hideSidebar"]);
 
