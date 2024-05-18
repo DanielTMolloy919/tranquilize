@@ -55,7 +55,8 @@ function processReddit(url: string, settings: Settings) {
   const shouldHideSubreddits =
     settings["reddit.hideSubreddits"] &&
     strippedUrl.includes("reddit.com/r/") &&
-    !strippedUrl.includes("/comments");
+    !strippedUrl.includes("/comments") &&
+    !strippedUrl.includes("/wiki");
 
   processElement("#main-content > div:last-of-type", shouldHideSubreddits);
 
