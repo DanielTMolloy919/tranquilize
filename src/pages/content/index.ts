@@ -44,13 +44,19 @@ function processReddit(url: string, settings: Settings) {
 
   const isHomeFeed =
     strippedUrl === "reddit.com" ||
-    strippedUrl === "reddit.com/r/all" ||
-    strippedUrl === "reddit.com/r/popular" ||
-    strippedUrl === "reddit.com/?feed=home";
+    strippedUrl.startsWith("reddit.com/?") ||
+    strippedUrl.startsWith("reddit.com/hot") ||
+    strippedUrl.startsWith("reddit.com/top") ||
+    strippedUrl.startsWith("reddit.com/rising") ||
+    strippedUrl.startsWith("reddit.com/best") ||
+    strippedUrl.startsWith("reddit.com/new") ||
+    strippedUrl.startsWith("reddit.com/r/popular") ||
+    strippedUrl.startsWith("reddit.com/r/all");
 
-  const shouldHideHomeFeeds = settings["reddit.hideHomeFeed"] && isHomeFeed;
-
-  processElement(".subgrid-container", shouldHideHomeFeeds);
+  processElement(
+    ".subgrid-container",
+    settings["reddit.hideHomeFeed"] && isHomeFeed,
+  );
 
   const shouldHideSubreddits =
     settings["reddit.hideSubreddits"] &&
