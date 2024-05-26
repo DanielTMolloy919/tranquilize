@@ -126,13 +126,13 @@ export default function Popup() {
           </TabsList>
           <TabsContent value="reddit">
             <div className="flex flex-col gap-2">
-              {Object.entries(settings)
-                .filter(([key]) => key.startsWith("reddit"))
-                .map(([key, value]) => (
+              {Object.keys(defaultSettings)
+                .filter((key) => key.startsWith("youtube"))
+                .map((key) => (
                   <SettingSwitch
                     key={key}
                     displayName={settingsDisplayNames[key as keyof Settings]}
-                    checked={value}
+                    checked={settings[key as keyof Settings]}
                     setChecked={(value) =>
                       setSettings({ ...settings, [key]: value })
                     }
@@ -142,13 +142,13 @@ export default function Popup() {
           </TabsContent>
           <TabsContent value="youtube">
             <div className="flex flex-col gap-2">
-              {Object.entries(settings)
-                .filter(([key]) => key.startsWith("youtube"))
-                .map(([key, value]) => (
+              {Object.keys(defaultSettings)
+                .filter((key) => key.startsWith("youtube"))
+                .map((key) => (
                   <SettingSwitch
                     key={key}
                     displayName={settingsDisplayNames[key as keyof Settings]}
-                    checked={value}
+                    checked={settings[key as keyof Settings]}
                     setChecked={(value) =>
                       setSettings({ ...settings, [key]: value })
                     }

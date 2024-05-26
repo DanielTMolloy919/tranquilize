@@ -10,6 +10,7 @@ html[tranquilize_youtube_home_feed="true"] ytd-rich-grid-renderer,
 html[tranquilize_youtube_sidebar="true"] #guide-content,
 html[tranquilize_youtube_sidebar="true"] #guide-button,
 html[tranquilize_youtube_sidebar="true"] ytd-mini-guide-renderer,
-html[tranquilize_youtube_suggestions="true"] #related {
+html[tranquilize_youtube_suggestions="true"] #related,
+html[tranquilize_youtube_channel_feeds="true"] #contents {
     display: none !important;
 }

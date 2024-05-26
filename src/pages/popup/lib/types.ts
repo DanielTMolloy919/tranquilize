@@ -4,6 +4,7 @@ export type Settings = {
   "reddit.sidebar": boolean;
   "reddit.suggestions": boolean;
   "youtube.home_feed": boolean;
+  "youtube.channel_feeds": boolean;
   "youtube.sidebar": boolean;
   "youtube.suggestions": boolean;
 };
@@ -14,6 +15,7 @@ export const settingsDisplayNames: Record<keyof Settings, string> = {
   "reddit.sidebar": "Hide Sidebar",
   "reddit.suggestions": "Hide Suggested Posts",
   "youtube.home_feed": "Hide Home Feeds",
+  "youtube.channel_feeds": "Hide Channel Feeds",
   "youtube.sidebar": "Hide Sidebar",
   "youtube.suggestions": "Hide Suggested Videos",
 };
@@ -24,6 +26,7 @@ export const defaultSettings: Settings = {
   "reddit.sidebar": true,
   "reddit.suggestions": true,
   "youtube.home_feed": true,
+  "youtube.channel_feeds": true,
   "youtube.sidebar": true,
   "youtube.suggestions": true,
 };

@@ -81,9 +81,15 @@ function modifyValue(
     return value && isSubredditFeed;
   } else if (key === "youtube.home_feed") {
     const isHomeFeed = strippedUrl === "youtube.com";
-    console.log({ value, isHomeFeed });
 
     return value && isHomeFeed;
+  } else if (key === "youtube.channel_feeds") {
+    const isChannelHomeFeed =
+      /^youtube.com\/(channel\/[^\/]+|c\/[^\/]+|user\/[^\/]+|@[^\/]+)?(\/featured)?$/.test(
+        strippedUrl,
+      );
+
+    return value && isChannelHomeFeed;
   }
 
   return value;
