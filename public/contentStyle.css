@@ -1,20 +1,6 @@
-/* reddit */
-.subgrid-container,
-reddit-sidebar-nav,
-pdp-right-rail,
-#reddit-trending-searches-partial-container {
-    display: none !important;
-}
-
-/* youtube */
-#related,
-#shorts-container,
-#short-video-container,
-#guide-content {
-    visibility: hidden !important;
-}
-
-ytd-rich-grid-renderer,
-#guide-button {
+html[tranquilize_home_feed="true"] .subgrid-container,
+html[tranquilize_subreddits="true"] #main-content > div:last-of-type,
+html[tranquilize_sidebar="true"] reddit-sidebar-nav,
+html[tranquilize_suggestions="true"] pdp-right-rail {
     display: none !important;
 }

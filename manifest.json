@@ -25,7 +25,7 @@
         "https://*.youtube.com/*",
         "https://*.reddit.com/*"
       ],
-      "run_at": "document_end",
+      "run_at": "document_start",
       "js": [
         "src/pages/content/index.ts"
       ],

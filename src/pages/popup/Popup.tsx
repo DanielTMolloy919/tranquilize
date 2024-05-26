@@ -127,47 +127,45 @@ export default function Popup() {
           <TabsContent value="reddit">
             <div className="flex flex-col gap-2">
               <SettingSwitch
-                key="reddit.hideHomeFeed"
-                displayName={settingsDisplayNames["reddit.hideHomeFeed"]}
-                checked={settings["reddit.hideHomeFeed"]}
+                key="reddit.home_feed"
+                displayName={settingsDisplayNames["reddit.home_feed"]}
+                checked={settings["reddit.home_feed"]}
                 setChecked={(value) =>
-                  setSettings({ ...settings, "reddit.hideHomeFeed": value })
+                  setSettings({ ...settings, "reddit.home_feed": value })
                 }
               />
               <SettingSwitch
-                key="reddit.hideSubreddits"
-                displayName={settingsDisplayNames["reddit.hideSubreddits"]}
-                checked={settings["reddit.hideSubreddits"]}
+                key="reddit.subreddits"
+                displayName={settingsDisplayNames["reddit.subreddits"]}
+                checked={settings["reddit.subreddits"]}
                 setChecked={(value) =>
-                  setSettings({ ...settings, "reddit.hideSubreddits": value })
+                  setSettings({ ...settings, "reddit.subreddits": value })
                 }
               />
               <SettingSwitch
-                key="reddit.hideSidebar"
-                displayName={settingsDisplayNames["reddit.hideSidebar"]}
-                checked={settings["reddit.hideSidebar"]}
+                key="reddit.sidebar"
+                displayName={settingsDisplayNames["reddit.sidebar"]}
+                checked={settings["reddit.sidebar"]}
                 setChecked={(value) =>
-                  setSettings({ ...settings, "reddit.hideSidebar": value })
+                  setSettings({ ...settings, "reddit.sidebar": value })
                 }
               />
               <SettingSwitch
-                key="reddit.hideSuggestions"
-                displayName={settingsDisplayNames["reddit.hideSuggestions"]}
-                checked={settings["reddit.hideSuggestions"]}
+                key="reddit.suggestions"
+                displayName={settingsDisplayNames["reddit.suggestions"]}
+                checked={settings["reddit.suggestions"]}
                 setChecked={(value) =>
-                  setSettings({ ...settings, "reddit.hideSuggestions": value })
+                  setSettings({ ...settings, "reddit.suggestions": value })
                 }
               />
               <SettingSwitch
-                key="reddit.hideTrendingSearches"
-                displayName={
-                  settingsDisplayNames["reddit.hideTrendingSearches"]
-                }
-                checked={settings["reddit.hideTrendingSearches"]}
+                key="reddit.trending_searches"
+                displayName={settingsDisplayNames["reddit.trending_searches"]}
+                checked={settings["reddit.trending_searches"]}
                 setChecked={(value) =>
                   setSettings({
                     ...settings,
-                    "reddit.hideTrendingSearches": value,
+                    "reddit.trending_searches": value,
                   })
                 }
               />
@@ -176,27 +174,27 @@ export default function Popup() {
           <TabsContent value="youtube">
             <div className="flex flex-col gap-2">
               <SettingSwitch
-                key="youtube.hideHomeFeed"
-                displayName={settingsDisplayNames["youtube.hideHomeFeed"]}
-                checked={settings["youtube.hideHomeFeed"]}
+                key="youtube.home_feed"
+                displayName={settingsDisplayNames["youtube.home_feed"]}
+                checked={settings["youtube.home_feed"]}
                 setChecked={(value) =>
-                  setSettings({ ...settings, "youtube.hideHomeFeed": value })
+                  setSettings({ ...settings, "youtube.home_feed": value })
                 }
               />
               <SettingSwitch
-                key="youtube.hideSidebar"
-                displayName={settingsDisplayNames["youtube.hideSidebar"]}
-                checked={settings["youtube.hideSidebar"]}
+                key="youtube.sidebar"
+                displayName={settingsDisplayNames["youtube.sidebar"]}
+                checked={settings["youtube.sidebar"]}
                 setChecked={(value) =>
-                  setSettings({ ...settings, "youtube.hideSidebar": value })
+                  setSettings({ ...settings, "youtube.sidebar": value })
                 }
               />
               <SettingSwitch
-                key="youtube.hideSuggestions"
-                displayName={settingsDisplayNames["youtube.hideSuggestions"]}
-                checked={settings["youtube.hideSuggestions"]}
+                key="youtube.suggestions"
+                displayName={settingsDisplayNames["youtube.suggestions"]}
+                checked={settings["youtube.suggestions"]}
                 setChecked={(value) =>
-                  setSettings({ ...settings, "youtube.hideSuggestions": value })
+                  setSettings({ ...settings, "youtube.suggestions": value })
                 }
               />
             </div>

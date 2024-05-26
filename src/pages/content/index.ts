@@ -1,129 +1,71 @@
 import { defaultSettings, Settings } from "@pages/popup/lib/types";
 
-let settings: Settings | null = null;
+const url = window.location.href;
+const urlObject = new URL(url);
+let strippedUrl = urlObject.origin + urlObject.pathname; // remove query params
+strippedUrl = strippedUrl
+  .replace(/\/$/, "") // trailing slash
+  .replace(/https?:\/\//, "") // protocol
+  .replace("www.", ""); // www
 
 chrome.storage.sync.get("settings", (data) => {
-  settings = data.settings;
+  const settings = data.settings;
   if (!settings) {
-    settings = defaultSettings;
-    chrome.storage.sync.set({ settings });
+    chrome.storage.sync.set({ defaultSettings });
   }
-  processTab();
+  processTab(settings);
 });
 
 chrome.storage.onChanged.addListener((changes) => {
   if (changes.settings) {
-    settings = changes.settings.newValue;
-    processTab();
+    processTab(changes.settings.newValue);
   }
 });
 
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  if (request.message === "processTab") {
-    processTab();
-  }
-});
+function processTab(settings: Settings) {
+  let localSettings = Object.entries(settings || {});
 
-function processTab() {
-  if (!settings) return;
-
-  const url = window.location.href;
-
-  if (url.includes("reddit.com")) {
-    processReddit(url, settings);
-  } else if (url.includes("youtube.com")) {
-    processYoutube(url, settings);
-  }
-}
-
-function processReddit(url: string, settings: Settings) {
-  const urlObject = new URL(url);
-  let strippedUrl = urlObject.origin + urlObject.pathname; // remove query params
-  strippedUrl = strippedUrl
-    .replace(/\/$/, "") // trailing slash
-    .replace(/https?:\/\//, "") // protocol
-    .replace("www.", ""); // www
-
-  const homeSubPages = [
-    "hot",
-    "top",
-    "rising",
-    "best",
-    "new",
-    "r/popular",
-    "r/all",
-  ];
-  const isHomeFeed =
-    strippedUrl === "reddit.com" ||
-    homeSubPages.some((page) => strippedUrl.startsWith(`reddit.com/${page}`));
-
-  processElement(
-    ".subgrid-container",
-    settings["reddit.hideHomeFeed"] && isHomeFeed,
-  );
-
-  const isSubredditFeed =
-    /^reddit.com\/r\/[^\/]+(\/hot|\/new|\/top|\/rising)?$/.test(strippedUrl);
-
-  processElement(
-    "#main-content > div:last-of-type",
-    settings["reddit.hideSubreddits"] && isSubredditFeed,
-  );
-
-  processElement("reddit-sidebar-nav", settings["reddit.hideSidebar"]);
-
-  processElement("pdp-right-rail", settings["reddit.hideSuggestions"]);
-
-  const redditSearchRes = document
-    .getElementsByTagName("reddit-search-large")[0]
-    ?.shadowRoot?.getElementById("reddit-trending-searches-partial-container");
-
-  if (redditSearchRes) {
-    processElement(redditSearchRes, settings["reddit.hideTrendingSearches"]);
-
-    // hide the title as well
-    const siblingDiv = redditSearchRes.previousElementSibling;
-    if (siblingDiv && siblingDiv instanceof HTMLElement) {
-      processElement(siblingDiv, settings["reddit.hideTrendingSearches"]);
-    }
-  }
-}
-
-function processYoutube(url: string, settings: Settings) {
-  processElement(
-    "ytd-rich-grid-renderer",
-    settings["youtube.hideHomeFeed"],
-    "display-flex",
-  );
-
-  processElement("#related", settings["youtube.hideSuggestions"], "visibility");
-
-  processElement(
-    "#guide-content",
-    settings["youtube.hideSidebar"],
-    "visibility",
-  );
-  processElement("#guide-button", settings["youtube.hideSidebar"]);
-  processElement("ytd-mini-guide-renderer", settings["youtube.hideSidebar"]);
-}
-
-function processElement(
-  _element: string | HTMLElement,
-  shouldHide: boolean,
-  type: "display-block" | "display-flex" | "visibility" = "display-block",
-) {
-  const element =
-    typeof _element === "string"
-      ? (document.querySelector(_element) as HTMLElement)
-      : _element;
-
-  if (!element) return;
-
-  if (type === "display-block") {
-    element.style.cssText = `display: ${shouldHide ? "none" : "block"} !important`;
-  } else if (type === "display-flex") {
-    element.style.cssText = `display: ${shouldHide ? "none" : "flex"} !important`;
+  if (url.includes("youtube.com")) {
+    localSettings = localSettings.filter(([key]) => key.startsWith("youtube"));
+  } else if (url.includes("reddit.com")) {
+    localSettings = localSettings.filter(([key]) => key.startsWith("reddit"));
   } else {
-    element.style.cssText = `visibility: ${shouldHide ? "hidden" : "visible"} !important`;
+    return;
   }
+
+  for (const [key, value] of localSettings) {
+    const modifiedValue = modifyValue(key, value);
+
+    document.documentElement.setAttribute(
+      `tranquilize_${key.split(".")[1]}`,
+      modifiedValue.toString(),
+    );
+  }
+}
+
+function modifyValue(key: string, value: boolean): boolean {
+  if (key === "reddit.home_feed") {
+    const homeSubPages = [
+      "hot",
+      "top",
+      "rising",
+      "best",
+      "new",
+      "r/popular",
+      "r/all",
+    ];
+
+    const isHomeFeed =
+      strippedUrl === "reddit.com" ||
+      homeSubPages.some((page) => strippedUrl.startsWith(`reddit.com/${page}`));
+
+    return value && isHomeFeed;
+  } else if (key === "reddit.subreddits") {
+    const isSubredditFeed =
+      /^reddit.com\/r\/[^\/]+(\/hot|\/new|\/top|\/rising)?$/.test(strippedUrl);
+
+    return value && isSubredditFeed;
+  }
+
+  return value;
 }

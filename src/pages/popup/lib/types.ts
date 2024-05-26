@@ -1,32 +1,32 @@
 export type Settings = {
-  "reddit.hideHomeFeed": boolean;
-  "reddit.hideSubreddits": boolean;
-  "reddit.hideSidebar": boolean;
-  "reddit.hideSuggestions": boolean;
-  "reddit.hideTrendingSearches": boolean;
-  "youtube.hideHomeFeed": boolean;
-  "youtube.hideSidebar": boolean;
-  "youtube.hideSuggestions": boolean;
+  "reddit.home_feed": boolean;
+  "reddit.subreddits": boolean;
+  "reddit.sidebar": boolean;
+  "reddit.suggestions": boolean;
+  "reddit.trending_searches": boolean;
+  "youtube.home_feed": boolean;
+  "youtube.sidebar": boolean;
+  "youtube.suggestions": boolean;
 };
 
 export const settingsDisplayNames: Record<keyof Settings, string> = {
-  "reddit.hideHomeFeed": "Hide Home Feeds",
-  "reddit.hideSubreddits": "Hide Subreddit Feeds",
-  "reddit.hideSidebar": "Hide Sidebar",
-  "reddit.hideSuggestions": "Hide Suggested Posts",
-  "reddit.hideTrendingSearches": "Hide Trending Searches",
-  "youtube.hideHomeFeed": "Hide All Feeds",
-  "youtube.hideSidebar": "Hide Sidebar",
-  "youtube.hideSuggestions": "Hide Suggested Videos",
+  "reddit.home_feed": "Hide Home Feeds",
+  "reddit.subreddits": "Hide Subreddit Feeds",
+  "reddit.sidebar": "Hide Sidebar",
+  "reddit.suggestions": "Hide Suggested Posts",
+  "reddit.trending_searches": "Hide Trending Searches",
+  "youtube.home_feed": "Hide Home Feeds",
+  "youtube.sidebar": "Hide Sidebar",
+  "youtube.suggestions": "Hide Suggested Videos",
 };
 
 export const defaultSettings: Settings = {
-  "reddit.hideHomeFeed": true,
-  "reddit.hideSubreddits": true,
-  "reddit.hideSidebar": true,
-  "reddit.hideSuggestions": true,
-  "reddit.hideTrendingSearches": true,
-  "youtube.hideHomeFeed": true,
-  "youtube.hideSidebar": true,
-  "youtube.hideSuggestions": true,
+  "reddit.home_feed": true,
+  "reddit.subreddits": true,
+  "reddit.sidebar": true,
+  "reddit.suggestions": true,
+  "reddit.trending_searches": true,
+  "youtube.home_feed": true,
+  "youtube.sidebar": true,
+  "youtube.suggestions": true,
 };
