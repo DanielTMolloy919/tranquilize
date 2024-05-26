@@ -115,7 +115,7 @@ export default function Popup() {
 
   return (
     <ThemeProvider>
-      <div className="absolute top-0 left-0 right-0 bottom-0 text-center h-full p-3 flex flex-col gap-2 justify-between">
+      <div className="absolute top-0 left-0 right-0 bottom-0 text-center h-full p-3 flex flex-col justify-between">
         <div className="absolute top-0 right-0 p-3">
           <ModeToggle />
         </div>
@@ -202,14 +202,16 @@ export default function Popup() {
             </div>
           </TabsContent>
         </Tabs>
-
-        <button
-          onClick={() =>
-            openLink("https://github.com/DanielTMolloy919/tranquilize")
-          }
-        >
-          GitHub
-        </button>
+        <div className="flex gap-2 justify-center w-full">
+          <span>v{APP_VERSION}</span>
+          <button
+            onClick={() =>
+              openLink("https://github.com/DanielTMolloy919/tranquilize")
+            }
+          >
+            GitHub
+          </button>
+        </div>
       </div>
     </ThemeProvider>
   );
