@@ -37,7 +37,7 @@ function processTab(settings: Settings) {
     const modifiedValue = modifyValue(key, value);
 
     document.documentElement.setAttribute(
-      `tranquilize_${key.split(".")[1]}`,
+      `tranquilize_${key.replace(".", "_")}`,
       modifiedValue.toString(),
     );
   }

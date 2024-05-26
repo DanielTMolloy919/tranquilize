@@ -1,6 +1,15 @@
-html[tranquilize_home_feed="true"] .subgrid-container,
-html[tranquilize_subreddits="true"] #main-content > div:last-of-type,
-html[tranquilize_sidebar="true"] reddit-sidebar-nav,
-html[tranquilize_suggestions="true"] pdp-right-rail {
+html[tranquilize_reddit_home_feed="true"] .subgrid-container,
+html[tranquilize_reddit_subreddits="true"] #main-content > div:last-of-type,
+html[tranquilize_reddit_sidebar="true"] reddit-sidebar-nav,
+html[tranquilize_reddit_sidebar="true"] #navbar-menu-button,
+html[tranquilize_reddit_suggestions="true"] pdp-right-rail {
+    display: none !important;
+}
+
+html[tranquilize_youtube_home_feed="true"] ytd-rich-grid-renderer,
+html[tranquilize_youtube_sidebar="true"] #guide-content,
+html[tranquilize_youtube_sidebar="true"] #guide-button,
+html[tranquilize_youtube_sidebar="true"] ytd-mini-guide-renderer,
+html[tranquilize_youtube_suggestions="true"] #related {
     display: none !important;
 }
