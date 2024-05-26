@@ -86,10 +86,7 @@ export default function Popup() {
     });
 
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-      if (!tabs[0].url) return;
-
-      const url = new URL(tabs[0].url);
-      const hostname = url.hostname;
+      const hostname = new URL(tabs[0]?.url || "").hostname;
 
       if (hostname.includes("reddit")) {
         setActiveTab("reddit");
@@ -124,38 +121,24 @@ export default function Popup() {
             <TabsTrigger value="reddit">Reddit</TabsTrigger>
             <TabsTrigger value="youtube">YouTube</TabsTrigger>
           </TabsList>
-          <TabsContent value="reddit">
-            <div className="flex flex-col gap-2">
-              {Object.keys(defaultSettings)
-                .filter((key) => key.startsWith("reddit"))
-                .map((key) => (
-                  <SettingSwitch
-                    key={key}
-                    displayName={settingsDisplayNames[key as keyof Settings]}
-                    checked={settings[key as keyof Settings]}
-                    setChecked={(value) =>
-                      setSettings({ ...settings, [key]: value })
-                    }
-                  />
-                ))}
-            </div>
-          </TabsContent>
-          <TabsContent value="youtube">
-            <div className="flex flex-col gap-2">
-              {Object.keys(defaultSettings)
-                .filter((key) => key.startsWith("youtube"))
-                .map((key) => (
-                  <SettingSwitch
-                    key={key}
-                    displayName={settingsDisplayNames[key as keyof Settings]}
-                    checked={settings[key as keyof Settings]}
-                    setChecked={(value) =>
-                      setSettings({ ...settings, [key]: value })
-                    }
-                  />
-                ))}
-            </div>
-          </TabsContent>
+          {["youtube", "reddit"].map((url) => (
+            <TabsContent key={url} value={url}>
+              <div className="flex flex-col gap-2">
+                {Object.keys(defaultSettings)
+                  .filter((key) => key.startsWith(url))
+                  .map((key) => (
+                    <SettingSwitch
+                      key={key}
+                      displayName={settingsDisplayNames[key as keyof Settings]}
+                      checked={settings[key as keyof Settings]}
+                      setChecked={(value) =>
+                        setSettings({ ...settings, [key]: value })
+                      }
+                    />
+                  ))}
+              </div>
+            </TabsContent>
+          ))}
         </Tabs>
         <div className="flex gap-2 justify-center w-full">
           <span>v{APP_VERSION}</span>
