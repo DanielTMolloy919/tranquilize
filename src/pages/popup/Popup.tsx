@@ -127,7 +127,7 @@ export default function Popup() {
           <TabsContent value="reddit">
             <div className="flex flex-col gap-2">
               {Object.keys(defaultSettings)
-                .filter((key) => key.startsWith("youtube"))
+                .filter((key) => key.startsWith("reddit"))
                 .map((key) => (
                   <SettingSwitch
                     key={key}
