@@ -1,29 +1,38 @@
 import { defaultSettings, Settings } from "@pages/popup/lib/types";
 
-const url = window.location.href;
-const urlObject = new URL(url);
-let strippedUrl = urlObject.origin + urlObject.pathname; // remove query params
-strippedUrl = strippedUrl
-  .replace(/\/$/, "") // trailing slash
-  .replace(/https?:\/\//, "") // protocol
-  .replace("www.", ""); // www
+let settings: Settings | null = null;
 
 chrome.storage.sync.get("settings", (data) => {
-  let settings = data.settings;
+  settings = data.settings;
   if (!settings) {
     settings = defaultSettings;
     chrome.storage.sync.set({ settings });
   }
-  processTab(settings);
+  processTab();
 });
 
 chrome.storage.onChanged.addListener((changes) => {
   if (changes.settings) {
-    processTab(changes.settings.newValue);
+    settings = changes.settings.newValue;
+    processTab();
   }
 });
 
-function processTab(settings: Settings) {
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  if (request.message === "processTab") {
+    processTab();
+  }
+});
+
+function processTab() {
+  const url = window.location.href;
+  const urlObject = new URL(url);
+  let strippedUrl = urlObject.origin + urlObject.pathname; // remove query params
+  strippedUrl = strippedUrl
+    .replace(/\/$/, "") // trailing slash
+    .replace(/https?:\/\//, "") // protocol
+    .replace("www.", ""); // www
+
   let localSettings = Object.entries(settings || {});
 
   if (url.includes("youtube.com")) {
@@ -35,7 +44,7 @@ function processTab(settings: Settings) {
   }
 
   for (const [key, value] of localSettings) {
-    const modifiedValue = modifyValue(key, value);
+    const modifiedValue = modifyValue(key, value, strippedUrl);
 
     document.documentElement.setAttribute(
       `tranquilize_${key.replace(".", "_")}`,
@@ -44,7 +53,11 @@ function processTab(settings: Settings) {
   }
 }
 
-function modifyValue(key: string, value: boolean): boolean {
+function modifyValue(
+  key: string,
+  value: boolean,
+  strippedUrl: string,
+): boolean {
   if (key === "reddit.home_feed") {
     const homeSubPages = [
       "hot",
@@ -66,6 +79,11 @@ function modifyValue(key: string, value: boolean): boolean {
       /^reddit.com\/r\/[^\/]+(\/hot|\/new|\/top|\/rising)?$/.test(strippedUrl);
 
     return value && isSubredditFeed;
+  } else if (key === "youtube.home_feed") {
+    const isHomeFeed = strippedUrl === "youtube.com";
+    console.log({ value, isHomeFeed });
+
+    return value && isHomeFeed;
   }
 
   return value;
