@@ -126,66 +126,34 @@ export default function Popup() {
           </TabsList>
           <TabsContent value="reddit">
             <div className="flex flex-col gap-2">
-              <SettingSwitch
-                key="reddit.home_feed"
-                displayName={settingsDisplayNames["reddit.home_feed"]}
-                checked={settings["reddit.home_feed"]}
-                setChecked={(value) =>
-                  setSettings({ ...settings, "reddit.home_feed": value })
-                }
-              />
-              <SettingSwitch
-                key="reddit.subreddits"
-                displayName={settingsDisplayNames["reddit.subreddits"]}
-                checked={settings["reddit.subreddits"]}
-                setChecked={(value) =>
-                  setSettings({ ...settings, "reddit.subreddits": value })
-                }
-              />
-              <SettingSwitch
-                key="reddit.sidebar"
-                displayName={settingsDisplayNames["reddit.sidebar"]}
-                checked={settings["reddit.sidebar"]}
-                setChecked={(value) =>
-                  setSettings({ ...settings, "reddit.sidebar": value })
-                }
-              />
-              <SettingSwitch
-                key="reddit.suggestions"
-                displayName={settingsDisplayNames["reddit.suggestions"]}
-                checked={settings["reddit.suggestions"]}
-                setChecked={(value) =>
-                  setSettings({ ...settings, "reddit.suggestions": value })
-                }
-              />
+              {Object.entries(settings)
+                .filter(([key]) => key.startsWith("reddit"))
+                .map(([key, value]) => (
+                  <SettingSwitch
+                    key={key}
+                    displayName={settingsDisplayNames[key as keyof Settings]}
+                    checked={value}
+                    setChecked={(value) =>
+                      setSettings({ ...settings, [key]: value })
+                    }
+                  />
+                ))}
             </div>
           </TabsContent>
           <TabsContent value="youtube">
             <div className="flex flex-col gap-2">
-              <SettingSwitch
-                key="youtube.home_feed"
-                displayName={settingsDisplayNames["youtube.home_feed"]}
-                checked={settings["youtube.home_feed"]}
-                setChecked={(value) =>
-                  setSettings({ ...settings, "youtube.home_feed": value })
-                }
-              />
-              <SettingSwitch
-                key="youtube.sidebar"
-                displayName={settingsDisplayNames["youtube.sidebar"]}
-                checked={settings["youtube.sidebar"]}
-                setChecked={(value) =>
-                  setSettings({ ...settings, "youtube.sidebar": value })
-                }
-              />
-              <SettingSwitch
-                key="youtube.suggestions"
-                displayName={settingsDisplayNames["youtube.suggestions"]}
-                checked={settings["youtube.suggestions"]}
-                setChecked={(value) =>
-                  setSettings({ ...settings, "youtube.suggestions": value })
-                }
-              />
+              {Object.entries(settings)
+                .filter(([key]) => key.startsWith("youtube"))
+                .map(([key, value]) => (
+                  <SettingSwitch
+                    key={key}
+                    displayName={settingsDisplayNames[key as keyof Settings]}
+                    checked={value}
+                    setChecked={(value) =>
+                      setSettings({ ...settings, [key]: value })
+                    }
+                  />
+                ))}
             </div>
           </TabsContent>
         </Tabs>

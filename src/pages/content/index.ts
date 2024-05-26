@@ -9,9 +9,10 @@ strippedUrl = strippedUrl
   .replace("www.", ""); // www
 
 chrome.storage.sync.get("settings", (data) => {
-  const settings = data.settings;
+  let settings = data.settings;
   if (!settings) {
-    chrome.storage.sync.set({ defaultSettings });
+    settings = defaultSettings;
+    chrome.storage.sync.set({ settings });
   }
   processTab(settings);
 });
