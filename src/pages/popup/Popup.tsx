@@ -158,17 +158,6 @@ export default function Popup() {
                   setSettings({ ...settings, "reddit.suggestions": value })
                 }
               />
-              <SettingSwitch
-                key="reddit.trending_searches"
-                displayName={settingsDisplayNames["reddit.trending_searches"]}
-                checked={settings["reddit.trending_searches"]}
-                setChecked={(value) =>
-                  setSettings({
-                    ...settings,
-                    "reddit.trending_searches": value,
-                  })
-                }
-              />
             </div>
           </TabsContent>
           <TabsContent value="youtube">

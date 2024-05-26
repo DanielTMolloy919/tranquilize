@@ -3,7 +3,6 @@ export type Settings = {
   "reddit.subreddits": boolean;
   "reddit.sidebar": boolean;
   "reddit.suggestions": boolean;
-  "reddit.trending_searches": boolean;
   "youtube.home_feed": boolean;
   "youtube.sidebar": boolean;
   "youtube.suggestions": boolean;
@@ -14,7 +13,6 @@ export const settingsDisplayNames: Record<keyof Settings, string> = {
   "reddit.subreddits": "Hide Subreddit Feeds",
   "reddit.sidebar": "Hide Sidebar",
   "reddit.suggestions": "Hide Suggested Posts",
-  "reddit.trending_searches": "Hide Trending Searches",
   "youtube.home_feed": "Hide Home Feeds",
   "youtube.sidebar": "Hide Sidebar",
   "youtube.suggestions": "Hide Suggested Videos",
@@ -25,7 +23,6 @@ export const defaultSettings: Settings = {
   "reddit.subreddits": true,
   "reddit.sidebar": true,
   "reddit.suggestions": true,
-  "reddit.trending_searches": true,
   "youtube.home_feed": true,
   "youtube.sidebar": true,
   "youtube.suggestions": true,
