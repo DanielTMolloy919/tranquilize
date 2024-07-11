@@ -8,8 +8,12 @@ chrome.runtime.onInstalled.addListener(() => {
   });
 });
 
-chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-  if (changeInfo.status === "complete" && tab.active) {
-    chrome.tabs.sendMessage(tabId, { message: "processTab" });
+chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
+  if (changeInfo.status === "complete" && tab.active && changeInfo.url) {
+    try {
+      chrome.tabs.sendMessage(tabId, { message: "processTab" });
+    } catch (e) {
+      console.error(e);
+    }
   }
 });

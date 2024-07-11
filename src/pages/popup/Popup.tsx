@@ -146,6 +146,7 @@ export default function Popup() {
             onClick={() =>
               openLink("https://github.com/DanielTMolloy919/tranquilize")
             }
+            className="hover:underline"
           >
             GitHub
           </button>
