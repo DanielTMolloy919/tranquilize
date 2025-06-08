@@ -76,39 +76,55 @@ export default function Popup() {
   const [activeTab, setActiveTab] = useState<string>("reddit");
 
   useEffect(() => {
+    console.log("Fetching settings from storage...");
     chrome.storage.sync.get("settings", (data) => {
+      console.log("Storage data:", data);
       if (!data.settings) {
+        console.log("No settings found, setting defaults:", defaultSettings);
         chrome.storage.sync.set({ settings: defaultSettings });
         return;
       }
 
+      console.log("Settings loaded:", data.settings);
       setSettings(data.settings);
     });
 
+    console.log("Querying active tab...");
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      console.log("Active tab:", tabs[0]);
       const hostname = new URL(tabs[0]?.url || "").hostname;
+      console.log("Hostname:", hostname);
 
       if (hostname.includes("reddit")) {
+        console.log("Setting active tab to reddit");
         setActiveTab("reddit");
       } else if (hostname.includes("youtube")) {
+        console.log("Setting active tab to youtube");
         setActiveTab("youtube");
       } else if (hostname.includes("instagram")) {
+        console.log("Setting active tab to instagram");
         setActiveTab("instagram");
       }
     });
   }, []);
 
   useEffect(() => {
-    if (!settings) return;
+    if (!settings) {
+      console.log("No settings to save");
+      return;
+    }
 
+    console.log("Saving settings:", settings);
     chrome.storage.sync.set({ settings });
   }, [settings]);
 
   if (!settings) {
+    console.log("No settings available, returning null");
     return null;
   }
 
   function openLink(href: string) {
+    console.log("Opening link:", href);
     chrome.tabs.create({ url: href });
   }
 
