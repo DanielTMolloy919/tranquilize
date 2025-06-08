@@ -3,7 +3,7 @@ html[tranquilize_reddit_subreddits="true"] #main-content > div:last-of-type,
 html[tranquilize_reddit_sidebar="true"] reddit-sidebar-nav,
 html[tranquilize_reddit_sidebar="true"] #navbar-menu-button,
 html[tranquilize_reddit_suggestions="true"] pdp-right-rail {
-    display: none !important;
+  display: none !important;
 }
 
 html[tranquilize_youtube_home_feed="true"] ytd-rich-grid-renderer,
@@ -12,5 +12,12 @@ html[tranquilize_youtube_sidebar="true"] #guide-button,
 html[tranquilize_youtube_sidebar="true"] ytd-mini-guide-renderer,
 html[tranquilize_youtube_suggestions="true"] #related,
 html[tranquilize_youtube_channel_feeds="true"] #contents {
-    display: none !important;
+  display: none !important;
+}
+
+html[tranquilize_instagram_home_feed="true"] main[role="main"] article,
+html[tranquilize_instagram_reels="true"] [role="tablist"] a[href="/reels/"],
+html[tranquilize_instagram_reels="true"] [role="tablist"] a[href="/reels"],
+html[tranquilize_instagram_reels="true"] video {
+  display: none !important;
 }

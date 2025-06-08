@@ -7,6 +7,8 @@ interface Settings {
   "youtube.channel_feeds": boolean;
   "youtube.sidebar": boolean;
   "youtube.suggestions": boolean;
+  "instagram.home_feed": boolean;
+  "instagram.reels": boolean;
 }
 
 const defaultSettings: Settings = {
@@ -18,6 +20,8 @@ const defaultSettings: Settings = {
   "youtube.channel_feeds": true,
   "youtube.sidebar": true,
   "youtube.suggestions": true,
+  "instagram.home_feed": true,
+  "instagram.reels": true,
 };
 
 let settings: Settings | null = null;
@@ -75,6 +79,11 @@ function processTab() {
   } else if (url.includes("reddit.com")) {
     console.log("[Tranquilize] Detected Reddit page");
     localSettings = localSettings.filter(([key]) => key.startsWith("reddit"));
+  } else if (url.includes("instagram.com")) {
+    console.log("[Tranquilize] Detected Instagram page");
+    localSettings = localSettings.filter(([key]) =>
+      key.startsWith("instagram")
+    );
   } else {
     console.log("[Tranquilize] Not a supported page, returning");
     return;
@@ -147,6 +156,19 @@ function modifyValue(
       isChannelHomeFeed,
     });
     return value && isChannelHomeFeed;
+  } else if (key === "instagram.home_feed") {
+    const isHomeFeed =
+      strippedUrl === "instagram.com" || strippedUrl === "instagram.com/";
+
+    console.log("[Tranquilize] Instagram home feed check:", { isHomeFeed });
+    return value && isHomeFeed;
+  } else if (key === "instagram.reels") {
+    const isReelsPage =
+      strippedUrl === "instagram.com/reels" ||
+      strippedUrl.startsWith("instagram.com/reels/");
+
+    console.log("[Tranquilize] Instagram reels check:", { isReelsPage });
+    return value && isReelsPage;
   }
 
   return value;

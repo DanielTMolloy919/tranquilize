@@ -92,6 +92,8 @@ export default function Popup() {
         setActiveTab("reddit");
       } else if (hostname.includes("youtube")) {
         setActiveTab("youtube");
+      } else if (hostname.includes("instagram")) {
+        setActiveTab("instagram");
       }
     });
   }, []);
@@ -120,8 +122,9 @@ export default function Popup() {
           <TabsList>
             <TabsTrigger value="reddit">Reddit</TabsTrigger>
             <TabsTrigger value="youtube">YouTube</TabsTrigger>
+            <TabsTrigger value="instagram">Instagram</TabsTrigger>
           </TabsList>
-          {["youtube", "reddit"].map((url) => (
+          {["youtube", "reddit", "instagram"].map((url) => (
             <TabsContent key={url} value={url}>
               <div className="flex flex-col gap-2">
                 {Object.keys(defaultSettings)

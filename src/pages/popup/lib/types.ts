@@ -7,6 +7,8 @@ export type Settings = {
   "youtube.channel_feeds": boolean;
   "youtube.sidebar": boolean;
   "youtube.suggestions": boolean;
+  "instagram.home_feed": boolean;
+  "instagram.reels": boolean;
 };
 
 export const settingsDisplayNames: Record<keyof Settings, string> = {
@@ -18,6 +20,8 @@ export const settingsDisplayNames: Record<keyof Settings, string> = {
   "youtube.channel_feeds": "Hide Channel Feeds",
   "youtube.sidebar": "Hide Sidebar",
   "youtube.suggestions": "Hide Suggested Videos",
+  "instagram.home_feed": "Hide Home Feed",
+  "instagram.reels": "Hide Reels",
 };
 
 export const defaultSettings: Settings = {
@@ -29,4 +33,6 @@ export const defaultSettings: Settings = {
   "youtube.channel_feeds": true,
   "youtube.sidebar": true,
   "youtube.suggestions": true,
+  "instagram.home_feed": true,
+  "instagram.reels": true,
 };

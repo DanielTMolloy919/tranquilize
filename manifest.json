@@ -18,7 +18,11 @@
   "permissions": ["storage", "activeTab"],
   "content_scripts": [
     {
-      "matches": ["https://*.youtube.com/*", "https://*.reddit.com/*"],
+      "matches": [
+        "https://*.youtube.com/*",
+        "https://*.reddit.com/*",
+        "https://*.instagram.com/*"
+      ],
       "run_at": "document_start",
       "js": ["src/pages/content/index.ts"],
       "css": ["contentStyle.css"]
@@ -34,7 +38,11 @@
         "assets/types-*.js",
         "assets/index.ts-*.js"
       ],
-      "matches": ["https://*.youtube.com/*", "https://*.reddit.com/*"]
+      "matches": [
+        "https://*.youtube.com/*",
+        "https://*.reddit.com/*",
+        "https://*.instagram.com/*"
+      ]
     }
   ]
 }
