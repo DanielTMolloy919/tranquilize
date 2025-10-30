@@ -21,6 +21,8 @@ interface BlockRule {
 
 let settings: Record<string, boolean> | null = null;
 let config: RemoteConfig | null = null;
+let isInitialized = false;
+let attributeObserver: MutationObserver | null = null;
 
 console.log("[Tranquilize] Content script initialized");
 
@@ -47,12 +49,17 @@ async function init(retries = 3) {
 
     if (!settings || Object.keys(settings).length === 0) {
       console.log("[Tranquilize] No settings found, generating defaults");
-      // config is guaranteed to be non-null here due to check above
       settings = generateDefaultSettings(config as RemoteConfig);
       await browser.storage.sync.set({ settings });
     }
 
-    processTab();
+    // Wire up all event listeners
+    setupEventListeners();
+
+    // Initial application
+    applyAllRules();
+
+    isInitialized = true;
   } catch (error) {
     console.error("[Tranquilize] Initialization error:", error);
 
@@ -70,33 +77,99 @@ async function init(retries = 3) {
   }
 }
 
-init();
+// Setup all event listeners for robust SPA handling
+function setupEventListeners() {
+  console.log("[Tranquilize] Setting up event listeners");
 
-// Listen for settings changes
-browser.storage.onChanged.addListener((changes) => {
-  console.log("[Tranquilize] Settings changed:", changes);
-  if (changes.settings) {
-    settings = changes.settings.newValue;
-    processTab();
+  // 1. YouTube-specific SPA events (most reliable)
+  window.addEventListener("yt-page-data-updated", () => {
+    console.log("[Tranquilize] yt-page-data-updated event");
+    applyAllRules();
+  });
+
+  window.addEventListener("state-navigateend", () => {
+    console.log("[Tranquilize] state-navigateend event");
+    applyAllRules();
+  });
+
+  // 2. Standard navigation events
+  window.addEventListener("load", () => {
+    console.log("[Tranquilize] load event");
+    applyAllRules();
+  });
+
+  window.addEventListener("popstate", () => {
+    console.log("[Tranquilize] popstate event");
+    applyAllRules();
+  });
+
+  // 3. History API interception for instant detection
+  const originalPushState = history.pushState;
+  const originalReplaceState = history.replaceState;
+
+  history.pushState = function (...args) {
+    originalPushState.apply(this, args);
+    console.log("[Tranquilize] pushState intercepted");
+    applyAllRules();
+  };
+
+  history.replaceState = function (...args) {
+    originalReplaceState.apply(this, args);
+    console.log("[Tranquilize] replaceState intercepted");
+    applyAllRules();
+  };
+
+  // 4. Watch HTML attributes for settings changes (like the reference script)
+  // Build attribute filter list
+  const attributeFilter: string[] = [];
+  if (config) {
+    for (const siteName in config.sites) {
+      for (const rule of config.sites[siteName].rules) {
+        attributeFilter.push(`tranquilize_${siteName}_${rule.id}`);
+      }
+    }
   }
-});
 
-// Listen for messages from background script
-browser.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  console.log("[Tranquilize] Received message:", request);
-  if (request.message === "processTab") {
-    processTab();
+  if (attributeFilter.length > 0) {
+    attributeObserver = new MutationObserver((mutations) => {
+      console.log("[Tranquilize] HTML attribute changed:", mutations);
+      // Attribute changed externally, could re-sync if needed
+      // For now, our applyAllRules is idempotent so we're good
+    });
+
+    attributeObserver.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: attributeFilter,
+    });
   }
-});
 
-function processTab() {
-  if (!config || !settings) {
-    console.log("[Tranquilize] Config or settings not ready");
+  // 5. Listen for settings changes from storage
+  browser.storage.onChanged.addListener((changes) => {
+    console.log("[Tranquilize] Storage changed:", changes);
+    if (changes.settings) {
+      settings = changes.settings.newValue;
+      applyAllRules();
+    }
+  });
+
+  // 6. Listen for messages from background script
+  browser.runtime.onMessage.addListener((request) => {
+    console.log("[Tranquilize] Message received:", request);
+    if (request.message === "processTab") {
+      applyAllRules();
+    }
+  });
+}
+
+// Idempotent function to apply all rules
+function applyAllRules() {
+  if (!config || !settings || !isInitialized) {
+    console.log("[Tranquilize] Not ready yet, skipping");
     return;
   }
 
   const url = window.location.href;
-  console.log("[Tranquilize] Processing URL:", url);
+  console.log("[Tranquilize] Applying rules for URL:", url);
 
   const urlObject = new URL(url);
   let strippedUrl = urlObject.origin + urlObject.pathname;
@@ -124,29 +197,15 @@ function processTab() {
   applyRules(siteConfig.rules, strippedUrl, siteName);
 }
 
+// Idempotent function to apply rules for a specific site
+// Uses HTML attributes for instant, atomic updates (no CSS injection flicker)
 function applyRules(rules: BlockRule[], currentUrl: string, siteName: string) {
-  // Remove all existing Tranquilize styles
-  document
-    .querySelectorAll("style[data-tranquilize]")
-    .forEach((el) => el.remove());
-
-  const cssRules: string[] = [];
   let appliedCount = 0;
 
   for (const rule of rules) {
     const settingKey = `${siteName}.${rule.id}`;
     const isEnabled = settings?.[settingKey];
-
-    console.log(`[Tranquilize] Rule ${settingKey}:`, {
-      enabled: isEnabled,
-      currentUrl,
-      urlPatterns: rule.urlPatterns,
-    });
-
-    if (!isEnabled) {
-      console.log(`[Tranquilize] Rule ${settingKey} is disabled, skipping`);
-      continue;
-    }
+    const attributeName = `tranquilize_${siteName}_${rule.id}`;
 
     // Check if rule applies to current URL
     const matches = rule.urlPatterns.some((pattern) => {
@@ -159,36 +218,25 @@ function applyRules(rules: BlockRule[], currentUrl: string, siteName: string) {
       }
     });
 
-    if (matches) {
-      console.log(
-        `[Tranquilize] Rule ${settingKey} matches, applying selectors`
-      );
-      // Generate CSS for this rule
-      const selectors = rule.selectors
-        .map((selector) => `${selector}`)
-        .join(", ");
-      cssRules.push(`${selectors} { display: none !important; }`);
+    // Idempotent attribute toggling - safe to call multiple times
+    const shouldBeActive = isEnabled && matches;
+    const currentValue = document.documentElement.getAttribute(attributeName);
+
+    if (shouldBeActive && currentValue !== "true") {
+      document.documentElement.setAttribute(attributeName, "true");
+      console.log(`[Tranquilize] ✓ Activated: ${attributeName}`);
       appliedCount++;
-    } else {
-      console.log(
-        `[Tranquilize] Rule ${settingKey} does not match current URL`
-      );
+    } else if (!shouldBeActive && currentValue === "true") {
+      document.documentElement.removeAttribute(attributeName);
+      console.log(`[Tranquilize] ✗ Deactivated: ${attributeName}`);
+    } else if (shouldBeActive) {
+      appliedCount++; // Already active, count it
     }
   }
 
-  // Inject CSS
-  if (cssRules.length > 0) {
-    const style = document.createElement("style");
-    style.setAttribute("data-tranquilize", "true");
-    style.textContent = cssRules.join("\n");
-    document.head.appendChild(style);
-    console.log(
-      `[Tranquilize] Applied ${appliedCount} rules, injected CSS:`,
-      style.textContent
-    );
-  } else {
-    console.log("[Tranquilize] No rules matched, no CSS injected");
-  }
+  console.log(
+    `[Tranquilize] ${appliedCount}/${rules.length} rules active for ${siteName}`
+  );
 }
 
 function getSiteNameFromUrl(url: string): string | null {
@@ -213,3 +261,6 @@ function generateDefaultSettings(
   console.log("[Tranquilize] Generated default settings:", settings);
   return settings;
 }
+
+// Start the extension
+init();
