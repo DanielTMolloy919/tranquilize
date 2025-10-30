@@ -1,4 +1,8 @@
-export type Settings = {
+// Dynamic settings type - can have any string key with boolean value
+export type Settings = Record<string, boolean>;
+
+// Legacy type definitions kept for backwards compatibility
+export type LegacySettings = {
   "reddit.home_feed": boolean;
   "reddit.subreddits": boolean;
   "reddit.sidebar": boolean;
@@ -11,20 +15,8 @@ export type Settings = {
   "instagram.reels": boolean;
 };
 
-export const settingsDisplayNames: Record<keyof Settings, string> = {
-  "reddit.home_feed": "Hide Home Feeds",
-  "reddit.subreddits": "Hide Subreddit Feeds",
-  "reddit.sidebar": "Hide Sidebar",
-  "reddit.suggestions": "Hide Suggested Posts",
-  "youtube.home_feed": "Hide Home Feeds",
-  "youtube.channel_feeds": "Hide Channel Feeds",
-  "youtube.sidebar": "Hide Sidebar",
-  "youtube.suggestions": "Hide Suggested Videos",
-  "instagram.home_feed": "Hide Home Feed",
-  "instagram.reels": "Hide Reels",
-};
-
-export const defaultSettings: Settings = {
+// Fallback default settings (used only if remote config fails)
+export const defaultSettings: LegacySettings = {
   "reddit.home_feed": true,
   "reddit.subreddits": true,
   "reddit.sidebar": true,

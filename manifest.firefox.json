@@ -21,7 +21,11 @@
   "icons": {
     "128": "icon-128.png"
   },
-  "permissions": ["storage", "activeTab"],
+  "permissions": ["storage", "activeTab", "alarms"],
+  "host_permissions": [
+    "https://raw.githubusercontent.com/*",
+    "http://localhost:3001/*"
+  ],
   "content_scripts": [
     {
       "matches": [

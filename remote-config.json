@@ -1,0 +1,104 @@
+{
+  "version": "1.0.0",
+  "lastUpdated": "2025-10-30",
+  "sites": {
+    "youtube": {
+      "patterns": ["https://*.youtube.com/*"],
+      "rules": [
+        {
+          "id": "home_feed",
+          "displayName": "Hide Home Feeds",
+          "urlPatterns": ["^youtube\\.com$"],
+          "selectors": ["ytd-rich-grid-renderer"],
+          "defaultEnabled": true
+        },
+        {
+          "id": "channel_feeds",
+          "displayName": "Hide Channel Feeds",
+          "urlPatterns": [
+            "^youtube\\.com/(channel/[^/]+|c/[^/]+|user/[^/]+|@[^/]+)?(/featured)?$"
+          ],
+          "selectors": ["#contents"],
+          "defaultEnabled": true
+        },
+        {
+          "id": "sidebar",
+          "displayName": "Hide Sidebar",
+          "urlPatterns": [".*"],
+          "selectors": [
+            "#guide-content",
+            "#guide-button",
+            "ytd-mini-guide-renderer"
+          ],
+          "defaultEnabled": true
+        },
+        {
+          "id": "suggestions",
+          "displayName": "Hide Suggested Videos",
+          "urlPatterns": [".*"],
+          "selectors": ["#related"],
+          "defaultEnabled": true
+        }
+      ]
+    },
+    "reddit": {
+      "patterns": ["https://*.reddit.com/*"],
+      "rules": [
+        {
+          "id": "home_feed",
+          "displayName": "Hide Home Feeds",
+          "urlPatterns": [
+            "^reddit\\.com$",
+            "^reddit\\.com/(hot|top|rising|best|new|r/popular|r/all)"
+          ],
+          "selectors": [".subgrid-container"],
+          "defaultEnabled": true
+        },
+        {
+          "id": "subreddits",
+          "displayName": "Hide Subreddit Feeds",
+          "urlPatterns": ["^reddit\\.com/r/[^/]+(/(hot|new|top|rising))?$"],
+          "selectors": ["#main-content > div:last-of-type"],
+          "defaultEnabled": true
+        },
+        {
+          "id": "sidebar",
+          "displayName": "Hide Sidebar",
+          "urlPatterns": [".*"],
+          "selectors": ["reddit-sidebar-nav", "#navbar-menu-button"],
+          "defaultEnabled": true
+        },
+        {
+          "id": "suggestions",
+          "displayName": "Hide Suggested Posts",
+          "urlPatterns": [".*"],
+          "selectors": ["pdp-right-rail"],
+          "defaultEnabled": true
+        }
+      ]
+    },
+    "instagram": {
+      "patterns": ["https://*.instagram.com/*"],
+      "rules": [
+        {
+          "id": "home_feed",
+          "displayName": "Hide Home Feed",
+          "urlPatterns": ["^instagram\\.com/?$"],
+          "selectors": ["main[role='main'] article"],
+          "defaultEnabled": true
+        },
+        {
+          "id": "reels",
+          "displayName": "Hide Reels",
+          "urlPatterns": ["^instagram\\.com/reels"],
+          "selectors": [
+            "[role='tablist'] a[href='/reels/']",
+            "[role='tablist'] a[href='/reels']",
+            "video"
+          ],
+          "defaultEnabled": true
+        }
+      ]
+    }
+  }
+}
