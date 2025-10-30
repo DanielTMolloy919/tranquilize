@@ -5,10 +5,12 @@ import {
   fetchRemoteConfig,
 } from "./configFetcher";
 
-// Fetch config and initialize settings on install
-browser.runtime.onInstalled.addListener(async () => {
-  console.log("[Tranquilize] Extension installed/updated");
+console.log("[Tranquilize] Background script loaded");
 
+// Initialize on startup (not just install)
+async function initialize() {
+  console.log("[Tranquilize] Initializing...");
+  
   // Fetch remote config
   await fetchRemoteConfig();
 
@@ -20,6 +22,19 @@ browser.runtime.onInstalled.addListener(async () => {
     const settings = generateDefaultSettings(config);
     await browser.storage.sync.set({ settings });
   }
+  
+  console.log("[Tranquilize] Initialization complete");
+}
+
+// Initialize immediately on background script load
+initialize().catch(err => {
+  console.error("[Tranquilize] Initialization error:", err);
+});
+
+// Also initialize on install/update
+browser.runtime.onInstalled.addListener(async () => {
+  console.log("[Tranquilize] Extension installed/updated");
+  await initialize();
 });
 
 // Periodically refresh config (every 24 hours)
@@ -32,18 +47,38 @@ browser.alarms.onAlarm.addListener(async (alarm) => {
   }
 });
 
-// Listen for messages from content scripts
+// Listen for messages from content scripts and popup
+// Using a more Firefox-compatible approach
 browser.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  if (request.message === "getConfig") {
-    // Return true to indicate we'll respond asynchronously (important for Firefox)
-    getConfig().then(config => {
-      sendResponse(config);
-    }).catch(error => {
-      console.error("[Tranquilize] Error getting config:", error);
-      sendResponse(null);
-    });
-    return true; // Keep channel open for async response
+  console.log("[Tranquilize] Background received message:", request.message, "from", sender.tab ? "content" : "popup");
+  
+  // Simple ping test
+  if (request.message === "ping") {
+    console.log("[Tranquilize] Responding to ping");
+    sendResponse({ status: "ok", timestamp: Date.now() });
+    return false; // Sync response
   }
+  
+  if (request.message === "getConfig") {
+    // Handle async response for Firefox
+    (async () => {
+      try {
+        const config = await getConfig();
+        console.log("[Tranquilize] Got config, sending response. Version:", config?.version);
+        sendResponse(config);
+      } catch (error) {
+        console.error("[Tranquilize] Error getting config:", error);
+        sendResponse(null);
+      }
+    })();
+    
+    // CRITICAL: Return true to keep message channel open for async response
+    return true;
+  }
+  
+  // For other messages, don't keep channel open
+  console.log("[Tranquilize] Unknown message type:", request.message);
+  return false;
 });
 
 browser.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {

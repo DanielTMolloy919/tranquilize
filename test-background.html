@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Background Script Test</title>
+</head>
+<body>
+  <h1>Background Script Test</h1>
+  <button id="testBtn">Test getConfig Message</button>
+  <pre id="output"></pre>
+  
+  <script src="browser-polyfill.js"></script>
+  <script>
+    const output = document.getElementById('output');
+    const log = (msg) => {
+      output.textContent += msg + '\n';
+      console.log(msg);
+    };
+    
+    document.getElementById('testBtn').addEventListener('click', async () => {
+      output.textContent = '';
+      log('Sending getConfig message...');
+      
+      try {
+        const config = await browser.runtime.sendMessage({ message: 'getConfig' });
+        log('SUCCESS! Got config:');
+        log(JSON.stringify(config, null, 2));
+      } catch (error) {
+        log('ERROR: ' + error.message);
+        log('Full error: ' + JSON.stringify(error, null, 2));
+      }
+    });
+    
+    // Auto-test on load
+    setTimeout(() => document.getElementById('testBtn').click(), 500);
+  </script>
+</body>
+</html>

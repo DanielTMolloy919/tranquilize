@@ -92,6 +92,8 @@ export default function Popup() {
   const [config, setConfig] = useState<RemoteConfig | null>(null);
   const [activeTab, setActiveTab] = useState<string>("");
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [retryCount, setRetryCount] = useState(0);
 
   useEffect(() => {
     console.log("Loading config and settings...");
@@ -100,11 +102,33 @@ export default function Popup() {
 
   async function loadConfigAndSettings() {
     try {
-      // Get config from background script
-      const remoteConfig = await browser.runtime.sendMessage({
-        message: "getConfig",
-      });
+      // First, test if background script is responding
+      console.log("Testing connection to background...");
+      try {
+        const pingResponse = await browser.runtime.sendMessage({
+          message: "ping",
+        });
+        console.log("Background responded to ping:", pingResponse);
+      } catch (pingError) {
+        console.error("Background not responding to ping:", pingError);
+        throw new Error("Background script not responding");
+      }
+
+      // Get config from background script with timeout
+      console.log("Requesting config from background...");
+      const remoteConfig = await Promise.race([
+        browser.runtime.sendMessage({ message: "getConfig" }),
+        new Promise((_, reject) =>
+          setTimeout(() => reject(new Error("Timeout getting config")), 5000)
+        ),
+      ]);
+
       console.log("Remote config loaded:", remoteConfig);
+
+      if (!remoteConfig) {
+        throw new Error("No config returned from background");
+      }
+
       setConfig(remoteConfig);
 
       // Load settings
@@ -145,6 +169,18 @@ export default function Popup() {
       });
     } catch (error) {
       console.error("Error loading config:", error);
+      const errorMsg = error instanceof Error ? error.message : "Unknown error";
+      setError(errorMsg);
+
+      // Retry logic for Firefox timing issues
+      if (retryCount < 3 && errorMsg.includes("Timeout")) {
+        console.log(`Retrying... (attempt ${retryCount + 1}/3)`);
+        setRetryCount(retryCount + 1);
+        setTimeout(() => {
+          setError(null);
+          loadConfigAndSettings();
+        }, 1000);
+      }
     }
   }
 
@@ -180,8 +216,29 @@ export default function Popup() {
     console.log("No settings or config available, showing loading");
     return (
       <ThemeProvider>
-        <div className="absolute top-0 left-0 right-0 bottom-0 text-center h-full p-3 flex items-center justify-center">
-          <p>Loading...</p>
+        <div className="absolute top-0 left-0 right-0 bottom-0 text-center h-full p-3 flex flex-col items-center justify-center gap-2">
+          {error ? (
+            <>
+              <p className="text-destructive">Error: {error}</p>
+              {retryCount < 3 && (
+                <p className="text-sm text-muted-foreground">Retrying...</p>
+              )}
+              {retryCount >= 3 && (
+                <Button
+                  onClick={() => {
+                    setRetryCount(0);
+                    setError(null);
+                    loadConfigAndSettings();
+                  }}
+                  size="sm"
+                >
+                  Try Again
+                </Button>
+              )}
+            </>
+          ) : (
+            <p>Loading...</p>
+          )}
         </div>
       </ThemeProvider>
     );

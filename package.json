@@ -11,7 +11,7 @@
   },
   "scripts": {
     "build": "vite build",
-    "build:firefox": "vite build --config vite.config.firefox.ts",
+    "build:firefox": "vite build --config vite.config.firefox.ts && node fix-firefox-build.js",
     "build:all": "npm run build && npm run build:firefox",
     "build:zen": "npm run build:firefox && cd dist-firefox && zip -r ../tranquilize-zen.xpi * && cd .. && echo '\n✅ Zen extension packaged as tranquilize-zen.xpi'",
     "dev": "nodemon",
