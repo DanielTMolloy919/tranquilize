@@ -382,9 +382,15 @@ $RECYCLE.BIN/
 
 # build
 /dist
+/dist-firefox
+/web-ext-artifacts
+*.xpi
 
 # etc
 .idea
+
+# Vite temp files
+vite.config.ts.timestamp-*
 
 #generated manifest
 public/manifest.json

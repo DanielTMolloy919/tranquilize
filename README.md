@@ -5,7 +5,8 @@
   
   [![Version](https://img.shields.io/badge/version-1.1.2-blue.svg)](https://github.com/DanielTMolloy919/tranquilize)
   [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
-  [![Chrome Web Store](https://img.shields.io/badge/Chrome-Extension-orange.svg)](https://chrome.google.com/webstore/)
+  [![Chrome](https://img.shields.io/badge/Chrome-Compatible-orange.svg)](https://chrome.google.com/webstore/)
+  [![Firefox](https://img.shields.io/badge/Firefox-Compatible-red.svg)](https://addons.mozilla.org/)
 </div>
 
 ## ✨ Features
@@ -33,45 +34,68 @@ Tranquilize helps you browse mindfully by selectively hiding distracting content
 
 ## 🚀 Installation
 
-### Option 1: From Chrome Web Store (Recommended)
+### From Chrome Web Store
 
 _Coming soon - the extension will be available on the Chrome Web Store_
 
-### Option 2: Manual Installation (Developer Mode)
+### From Firefox Add-ons
 
-1. **Download the extension**
+_Coming soon - the extension will be available on Firefox Add-ons_
+
+### Manual Installation (Developer Mode)
+
+Tranquilize can be manually installed on both Chrome and Firefox browsers:
+
+<details>
+<summary><strong>Chrome Installation</strong></summary>
+
+1. **Download and build the extension**
 
    ```bash
    git clone https://github.com/DanielTMolloy919/tranquilize.git
    cd tranquilize
+   pnpm install  # or npm install
+   pnpm build    # or npm run build
    ```
 
-2. **Install dependencies**
-
-   ```bash
-   pnpm install
-   # or
-   npm install
-   ```
-
-3. **Build the extension**
-
-   ```bash
-   pnpm build
-   # or
-   npm run build
-   ```
-
-4. **Load in Chrome**
+2. **Load in Chrome**
 
    - Open Chrome and navigate to `chrome://extensions/`
    - Enable **Developer mode** (toggle in top-right corner)
    - Click **Load unpacked**
    - Select the `dist` folder from this project
 
-5. **Verify installation**
+3. **Verify installation**
    - The Tranquilize icon should appear in your Chrome toolbar
    - Visit YouTube, Reddit, or Instagram to test the functionality
+
+</details>
+
+<details>
+<summary><strong>Firefox Installation</strong></summary>
+
+1. **Download and build the extension**
+
+   ```bash
+   git clone https://github.com/DanielTMolloy919/tranquilize.git
+   cd tranquilize
+   pnpm install          # or npm install
+   pnpm build:firefox    # or npm run build:firefox
+   ```
+
+2. **Load in Firefox**
+
+   - Open Firefox and navigate to `about:debugging#/runtime/this-firefox`
+   - Click **Load Temporary Add-on**
+   - Navigate to the `dist-firefox` folder and select the `manifest.json` file
+
+3. **Verify installation**
+   - The Tranquilize icon should appear in your Firefox toolbar
+   - Visit YouTube, Reddit, or Instagram to test the functionality
+
+**Note:** Temporary add-ons in Firefox are removed when you close the browser. For permanent installation during development, you can use [web-ext](https://extensionworkshop.com/documentation/develop/getting-started-with-web-ext/) or wait for the official Firefox Add-ons release.
+
+</details>
 
 ## 🛠️ Development
 
@@ -79,7 +103,7 @@ _Coming soon - the extension will be available on the Chrome Web Store_
 
 - Node.js 18+
 - pnpm (recommended) or npm
-- Chrome browser
+- Chrome and/or Firefox browser
 
 ### Project Structure
 
@@ -100,14 +124,25 @@ tranquilize/
 - **Styling**: Tailwind CSS with shadcn/ui components
 - **Build Tool**: Vite with CRXJS plugin
 - **UI Components**: Radix UI primitives
-- **Extension API**: Chrome Extension Manifest V3
+- **Extension API**: WebExtension API (Manifest V3) for Chrome & Firefox
+- **Cross-Browser Support**: webextension-polyfill
 
 ### Development Commands
 
 ```bash
-pnpm dev          # Start development with hot reload
-pnpm build        # Build for production
-pnpm type-check   # Run TypeScript type checking
+# Chrome development
+pnpm dev              # Start Chrome development with hot reload
+pnpm build            # Build for Chrome production
+
+# Firefox development
+pnpm dev:firefox      # Start Firefox development with hot reload
+pnpm build:firefox    # Build for Firefox production
+
+# Build for both browsers
+pnpm build:all        # Build for Chrome and Firefox
+
+# Type checking
+pnpm type-check       # Run TypeScript type checking
 ```
 
 ## 📄 License

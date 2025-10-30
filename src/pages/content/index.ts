@@ -1,3 +1,5 @@
+import browser from "webextension-polyfill";
+
 interface Settings {
   "reddit.home_feed": boolean;
   "reddit.subreddits": boolean;
@@ -28,7 +30,7 @@ let settings: Settings | null = null;
 
 console.log("[Tranquilize] Content script initialized");
 
-chrome.storage.sync.get("settings", (data) => {
+browser.storage.sync.get("settings").then((data) => {
   console.log("[Tranquilize] Retrieved settings:", data.settings);
   settings = data.settings;
   if (!settings) {
@@ -37,12 +39,12 @@ chrome.storage.sync.get("settings", (data) => {
       defaultSettings
     );
     settings = defaultSettings;
-    chrome.storage.sync.set({ settings });
+    browser.storage.sync.set({ settings });
   }
   processTab();
 });
 
-chrome.storage.onChanged.addListener((changes) => {
+browser.storage.onChanged.addListener((changes) => {
   console.log("[Tranquilize] Settings changed:", changes);
   if (changes.settings) {
     settings = changes.settings.newValue;
@@ -50,7 +52,7 @@ chrome.storage.onChanged.addListener((changes) => {
   }
 });
 
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+browser.runtime.onMessage.addListener((request, sender, sendResponse) => {
   console.log("[Tranquilize] Received message:", request);
   if (request.message === "processTab") {
     processTab();

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import browser from "webextension-polyfill";
 import { Switch } from "@pages/popup/components/ui/switch";
 import { Label } from "@pages/popup/components/ui/label";
 import {
@@ -77,11 +78,11 @@ export default function Popup() {
 
   useEffect(() => {
     console.log("Fetching settings from storage...");
-    chrome.storage.sync.get("settings", (data) => {
+    browser.storage.sync.get("settings").then((data) => {
       console.log("Storage data:", data);
       if (!data.settings) {
         console.log("No settings found, setting defaults:", defaultSettings);
-        chrome.storage.sync.set({ settings: defaultSettings });
+        browser.storage.sync.set({ settings: defaultSettings });
         return;
       }
 
@@ -90,7 +91,7 @@ export default function Popup() {
     });
 
     console.log("Querying active tab...");
-    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    browser.tabs.query({ active: true, currentWindow: true }).then((tabs) => {
       console.log("Active tab:", tabs[0]);
       const hostname = new URL(tabs[0]?.url || "").hostname;
       console.log("Hostname:", hostname);
@@ -115,7 +116,7 @@ export default function Popup() {
     }
 
     console.log("Saving settings:", settings);
-    chrome.storage.sync.set({ settings });
+    browser.storage.sync.set({ settings });
   }, [settings]);
 
   if (!settings) {
@@ -125,7 +126,7 @@ export default function Popup() {
 
   function openLink(href: string) {
     console.log("Opening link:", href);
-    chrome.tabs.create({ url: href });
+    browser.tabs.create({ url: href });
   }
 
   return (

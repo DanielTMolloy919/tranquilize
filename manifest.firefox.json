@@ -1,0 +1,54 @@
+{
+  "manifest_version": 3,
+  "name": "Tranquilize",
+  "description": "Strip away online distractions",
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "tranquilize@danieltmolloy919.github.io",
+      "strict_min_version": "109.0"
+    }
+  },
+  "background": {
+    "scripts": ["src/pages/background/index.ts"],
+    "type": "module"
+  },
+  "action": {
+    "default_popup": "src/pages/popup/index.html",
+    "default_icon": {
+      "32": "icon-32.png"
+    }
+  },
+  "icons": {
+    "128": "icon-128.png"
+  },
+  "permissions": ["storage", "activeTab"],
+  "content_scripts": [
+    {
+      "matches": [
+        "https://*.youtube.com/*",
+        "https://*.reddit.com/*",
+        "https://*.instagram.com/*"
+      ],
+      "run_at": "document_start",
+      "js": ["src/pages/content/index.ts"],
+      "css": ["contentStyle.css"]
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "contentStyle.css",
+        "icon-128.png",
+        "icon-32.png",
+        "assets/*.js",
+        "assets/types-*.js",
+        "assets/index.ts-*.js"
+      ],
+      "matches": [
+        "https://*.youtube.com/*",
+        "https://*.reddit.com/*",
+        "https://*.instagram.com/*"
+      ]
+    }
+  ]
+}
