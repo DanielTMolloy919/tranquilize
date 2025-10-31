@@ -36,7 +36,7 @@
           "id": "suggestions",
           "displayName": "Hide Suggested Videos",
           "urlPatterns": [".*"],
-          "selectors": ["#related"],
+          "selectors": ["#related", ".ytp-fullscreen-grid"],
           "defaultEnabled": true
         }
       ]
