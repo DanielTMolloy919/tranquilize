@@ -57,13 +57,16 @@ export async function fetchRemoteConfig(): Promise<RemoteConfig | null> {
   try {
     if (USE_DEV_SERVER) {
       console.warn(
-        "⚠️ [Tranquilize] DEV MODE ENABLED - Using local config server!"
+        "⚠️ [Tranquilize:Backend] DEV MODE ENABLED - Using local config server!"
       );
       console.warn(
         "⚠️ Remember to set USE_DEV_SERVER = false before production!"
       );
     }
-    console.log("[Tranquilize] Fetching remote config from:", CONFIG_URL);
+    console.log(
+      "[Tranquilize:Backend] Fetching remote config from:",
+      CONFIG_URL
+    );
 
     // Check cache first
     const cached = await browser.storage.local.get([
@@ -76,7 +79,10 @@ export async function fetchRemoteConfig(): Promise<RemoteConfig | null> {
 
     // Return cached config if it's still fresh
     if (Date.now() - timestamp < CACHE_DURATION && cached[CACHE_KEY]) {
-      console.log("[Tranquilize] Using cached config, version:", cachedVersion);
+      console.log(
+        "[Tranquilize:Backend] Using cached config, version:",
+        cachedVersion
+      );
       return cached[CACHE_KEY] as RemoteConfig;
     }
 
@@ -96,7 +102,7 @@ export async function fetchRemoteConfig(): Promise<RemoteConfig | null> {
 
     const config: RemoteConfig = await response.json();
     console.log(
-      "[Tranquilize] Fetched remote config, version:",
+      "[Tranquilize:Backend] Fetched remote config, version:",
       config.version
     );
 
@@ -115,24 +121,27 @@ export async function fetchRemoteConfig(): Promise<RemoteConfig | null> {
     // If version changed, notify user
     if (cachedVersion && cachedVersion !== config.version) {
       console.log(
-        `[Tranquilize] Config updated from ${cachedVersion} to ${config.version}`
+        `[Tranquilize:Backend] Config updated from ${cachedVersion} to ${config.version}`
       );
       // You could add a notification here if desired
     }
 
     return config;
   } catch (error) {
-    console.error("[Tranquilize] Failed to fetch remote config:", error);
+    console.error(
+      "[Tranquilize:Backend] Failed to fetch remote config:",
+      error
+    );
 
     // Return cached config as fallback
     const cached = await browser.storage.local.get(CACHE_KEY);
     if (cached[CACHE_KEY]) {
-      console.log("[Tranquilize] Using cached config as fallback");
+      console.log("[Tranquilize:Backend] Using cached config as fallback");
       return cached[CACHE_KEY] as RemoteConfig;
     }
 
     // Last resort: return hardcoded defaults
-    console.log("[Tranquilize] Using hardcoded default config");
+    console.log("[Tranquilize:Backend] Using hardcoded default config");
     return getDefaultConfig();
   }
 }

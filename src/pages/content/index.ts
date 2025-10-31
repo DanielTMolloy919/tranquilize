@@ -24,7 +24,7 @@ let config: RemoteConfig | null = null;
 let isInitialized = false;
 let attributeObserver: MutationObserver | null = null;
 
-console.log("[Tranquilize] Content script initialized");
+console.log("[Tranquilize:Content] Content script initialized");
 
 // Initialize with retry logic for Firefox
 async function init(retries = 3) {
@@ -33,10 +33,10 @@ async function init(retries = 3) {
     const remoteConfig = await browser.runtime.sendMessage({
       message: "getConfig",
     });
-    console.log("[Tranquilize] Loaded remote config:", remoteConfig);
+    console.log("[Tranquilize:Content] Loaded remote config:", remoteConfig);
 
     if (!remoteConfig) {
-      console.error("[Tranquilize] Failed to load remote config");
+      console.error("[Tranquilize:Content] Failed to load remote config");
       return;
     }
 
@@ -44,11 +44,11 @@ async function init(retries = 3) {
 
     // Load user settings
     const data = await browser.storage.sync.get("settings");
-    console.log("[Tranquilize] Retrieved settings:", data.settings);
+    console.log("[Tranquilize:Content] Retrieved settings:", data.settings);
     settings = data.settings;
 
     if (!settings || Object.keys(settings).length === 0) {
-      console.log("[Tranquilize] No settings found, generating defaults");
+      console.log("[Tranquilize:Content] No settings found, generating defaults");
       settings = generateDefaultSettings(config as RemoteConfig);
       await browser.storage.sync.set({ settings });
     }
@@ -61,7 +61,7 @@ async function init(retries = 3) {
 
     isInitialized = true;
   } catch (error) {
-    console.error("[Tranquilize] Initialization error:", error);
+    console.error("[Tranquilize:Content] Initialization error:", error);
 
     // Retry if background script not ready yet (common in Firefox)
     if (
@@ -70,7 +70,7 @@ async function init(retries = 3) {
       error.message.includes("Receiving end does not exist")
     ) {
       console.log(
-        `[Tranquilize] Retrying initialization (${retries} attempts left)...`
+        `[Tranquilize:Content] Retrying initialization (${retries} attempts left)...`
       );
       setTimeout(() => init(retries - 1), 500);
     }
@@ -79,27 +79,27 @@ async function init(retries = 3) {
 
 // Setup all event listeners for robust SPA handling
 function setupEventListeners() {
-  console.log("[Tranquilize] Setting up event listeners");
+  console.log("[Tranquilize:Content] Setting up event listeners");
 
   // 1. YouTube-specific SPA events (most reliable)
   window.addEventListener("yt-page-data-updated", () => {
-    console.log("[Tranquilize] yt-page-data-updated event");
+    console.log("[Tranquilize:Content] yt-page-data-updated event");
     applyAllRules();
   });
 
   window.addEventListener("state-navigateend", () => {
-    console.log("[Tranquilize] state-navigateend event");
+    console.log("[Tranquilize:Content] state-navigateend event");
     applyAllRules();
   });
 
   // 2. Standard navigation events
   window.addEventListener("load", () => {
-    console.log("[Tranquilize] load event");
+    console.log("[Tranquilize:Content] load event");
     applyAllRules();
   });
 
   window.addEventListener("popstate", () => {
-    console.log("[Tranquilize] popstate event");
+    console.log("[Tranquilize:Content] popstate event");
     applyAllRules();
   });
 
@@ -109,13 +109,13 @@ function setupEventListeners() {
 
   history.pushState = function (...args) {
     originalPushState.apply(this, args);
-    console.log("[Tranquilize] pushState intercepted");
+    console.log("[Tranquilize:Content] pushState intercepted");
     applyAllRules();
   };
 
   history.replaceState = function (...args) {
     originalReplaceState.apply(this, args);
-    console.log("[Tranquilize] replaceState intercepted");
+    console.log("[Tranquilize:Content] replaceState intercepted");
     applyAllRules();
   };
 
@@ -132,7 +132,7 @@ function setupEventListeners() {
 
   if (attributeFilter.length > 0) {
     attributeObserver = new MutationObserver((mutations) => {
-      console.log("[Tranquilize] HTML attribute changed:", mutations);
+      console.log("[Tranquilize:Content] HTML attribute changed:", mutations);
       // Attribute changed externally, could re-sync if needed
       // For now, our applyAllRules is idempotent so we're good
     });
@@ -145,7 +145,7 @@ function setupEventListeners() {
 
   // 5. Listen for settings changes from storage
   browser.storage.onChanged.addListener((changes) => {
-    console.log("[Tranquilize] Storage changed:", changes);
+    console.log("[Tranquilize:Content] Storage changed:", changes);
     if (changes.settings) {
       settings = changes.settings.newValue;
       applyAllRules();
@@ -154,7 +154,7 @@ function setupEventListeners() {
 
   // 6. Listen for messages from background script
   browser.runtime.onMessage.addListener((request) => {
-    console.log("[Tranquilize] Message received:", request);
+    console.log("[Tranquilize:Content] Message received:", request);
     if (request.message === "processTab") {
       applyAllRules();
     }
@@ -164,12 +164,12 @@ function setupEventListeners() {
 // Idempotent function to apply all rules
 function applyAllRules() {
   if (!config || !settings || !isInitialized) {
-    console.log("[Tranquilize] Not ready yet, skipping");
+    console.log("[Tranquilize:Content] Not ready yet, skipping");
     return;
   }
 
   const url = window.location.href;
-  console.log("[Tranquilize] Applying rules for URL:", url);
+  console.log("[Tranquilize:Content] Applying rules for URL:", url);
 
   const urlObject = new URL(url);
   let strippedUrl = urlObject.origin + urlObject.pathname;
@@ -178,22 +178,22 @@ function applyAllRules() {
     .replace(/https?:\/\//, "") // remove protocol
     .replace("www.", ""); // remove www
 
-  console.log("[Tranquilize] Stripped URL:", strippedUrl);
+  console.log("[Tranquilize:Content] Stripped URL:", strippedUrl);
 
   // Find matching site config
   const siteName = getSiteNameFromUrl(strippedUrl);
   if (!siteName) {
-    console.log("[Tranquilize] No matching site config found");
+    console.log("[Tranquilize:Content] No matching site config found");
     return;
   }
 
   const siteConfig = config.sites[siteName];
   if (!siteConfig) {
-    console.log("[Tranquilize] Site config not found for:", siteName);
+    console.log("[Tranquilize:Content] Site config not found for:", siteName);
     return;
   }
 
-  console.log(`[Tranquilize] Applying rules for ${siteName}`);
+  console.log(`[Tranquilize:Content] Applying rules for ${siteName}`);
   applyRules(siteConfig.rules, strippedUrl, siteName);
 }
 
@@ -213,7 +213,7 @@ function applyRules(rules: BlockRule[], currentUrl: string, siteName: string) {
         const regex = new RegExp(pattern);
         return regex.test(currentUrl);
       } catch (error) {
-        console.error(`[Tranquilize] Invalid regex pattern: ${pattern}`, error);
+        console.error(`[Tranquilize:Content] Invalid regex pattern: ${pattern}`, error);
         return false;
       }
     });
@@ -224,18 +224,18 @@ function applyRules(rules: BlockRule[], currentUrl: string, siteName: string) {
 
     if (shouldBeActive && currentValue !== "true") {
       document.documentElement.setAttribute(attributeName, "true");
-      console.log(`[Tranquilize] ✓ Activated: ${attributeName}`);
+      console.log(`[Tranquilize:Content] ✓ Activated: ${attributeName}`);
       appliedCount++;
     } else if (!shouldBeActive && currentValue === "true") {
       document.documentElement.removeAttribute(attributeName);
-      console.log(`[Tranquilize] ✗ Deactivated: ${attributeName}`);
+      console.log(`[Tranquilize:Content] ✗ Deactivated: ${attributeName}`);
     } else if (shouldBeActive) {
       appliedCount++; // Already active, count it
     }
   }
 
   console.log(
-    `[Tranquilize] ${appliedCount}/${rules.length} rules active for ${siteName}`
+    `[Tranquilize:Content] ${appliedCount}/${rules.length} rules active for ${siteName}`
   );
 }
 
@@ -258,7 +258,7 @@ function generateDefaultSettings(
     }
   }
 
-  console.log("[Tranquilize] Generated default settings:", settings);
+  console.log("[Tranquilize:Content] Generated default settings:", settings);
   return settings;
 }
 

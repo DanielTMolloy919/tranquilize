@@ -96,26 +96,26 @@ export default function Popup() {
   const [retryCount, setRetryCount] = useState(0);
 
   useEffect(() => {
-    console.log("Loading config and settings...");
+    console.log("[Tranquilize:Popup] Loading config and settings...");
     loadConfigAndSettings();
   }, []);
 
   async function loadConfigAndSettings() {
     try {
       // First, test if background script is responding
-      console.log("Testing connection to background...");
+      console.log("[Tranquilize:Popup] Testing connection to background...");
       try {
         const pingResponse = await browser.runtime.sendMessage({
           message: "ping",
         });
-        console.log("Background responded to ping:", pingResponse);
+        console.log("[Tranquilize:Popup] Background responded to ping:", pingResponse);
       } catch (pingError) {
-        console.error("Background not responding to ping:", pingError);
+        console.error("[Tranquilize:Popup] Background not responding to ping:", pingError);
         throw new Error("Background script not responding");
       }
 
       // Get config from background script with timeout
-      console.log("Requesting config from background...");
+      console.log("[Tranquilize:Popup] Requesting config from background...");
       const remoteConfig = await Promise.race([
         browser.runtime.sendMessage({ message: "getConfig" }),
         new Promise((_, reject) =>
@@ -123,7 +123,7 @@ export default function Popup() {
         ),
       ]);
 
-      console.log("Remote config loaded:", remoteConfig);
+      console.log("[Tranquilize:Popup] Remote config loaded:", remoteConfig);
 
       if (!remoteConfig) {
         throw new Error("No config returned from background");
@@ -133,29 +133,29 @@ export default function Popup() {
 
       // Load settings
       const data = await browser.storage.sync.get("settings");
-      console.log("Storage data:", data);
+      console.log("[Tranquilize:Popup] Storage data:", data);
 
       if (!data.settings || Object.keys(data.settings).length === 0) {
-        console.log("No settings found, generating defaults");
+        console.log("[Tranquilize:Popup] No settings found, generating defaults");
         const defaultSettings = generateDefaultSettings(remoteConfig);
         await browser.storage.sync.set({ settings: defaultSettings });
         setSettings(defaultSettings);
       } else {
-        console.log("Settings loaded:", data.settings);
+        console.log("[Tranquilize:Popup] Settings loaded:", data.settings);
         setSettings(data.settings);
       }
 
       // Set active tab based on current page
       browser.tabs.query({ active: true, currentWindow: true }).then((tabs) => {
-        console.log("Active tab:", tabs[0]);
+        console.log("[Tranquilize:Popup] Active tab:", tabs[0]);
         const hostname = new URL(tabs[0]?.url || "").hostname;
-        console.log("Hostname:", hostname);
+        console.log("[Tranquilize:Popup] Hostname:", hostname);
 
         // Find matching site
         const sites = Object.keys(remoteConfig.sites);
         for (const site of sites) {
           if (hostname.includes(site)) {
-            console.log("Setting active tab to", site);
+            console.log("[Tranquilize:Popup] Setting active tab to", site);
             setActiveTab(site);
             return;
           }
@@ -163,18 +163,18 @@ export default function Popup() {
 
         // Default to first site if no match
         if (sites.length > 0) {
-          console.log("No match found, defaulting to", sites[0]);
+          console.log("[Tranquilize:Popup] No match found, defaulting to", sites[0]);
           setActiveTab(sites[0]);
         }
       });
     } catch (error) {
-      console.error("Error loading config:", error);
+      console.error("[Tranquilize:Popup] Error loading config:", error);
       const errorMsg = error instanceof Error ? error.message : "Unknown error";
       setError(errorMsg);
 
       // Retry logic for Firefox timing issues
       if (retryCount < 3 && errorMsg.includes("Timeout")) {
-        console.log(`Retrying... (attempt ${retryCount + 1}/3)`);
+        console.log(`[Tranquilize:Popup] Retrying... (attempt ${retryCount + 1}/3)`);
         setRetryCount(retryCount + 1);
         setTimeout(() => {
           setError(null);
@@ -187,7 +187,7 @@ export default function Popup() {
   async function handleRefreshConfig() {
     setIsRefreshing(true);
     try {
-      console.log("Force refreshing config...");
+      console.log("[Tranquilize:Popup] Force refreshing config...");
       // Clear cache and reload
       await browser.storage.local.remove([
         "remote_config",
@@ -196,7 +196,7 @@ export default function Popup() {
       ]);
       await loadConfigAndSettings();
     } catch (error) {
-      console.error("Error refreshing config:", error);
+      console.error("[Tranquilize:Popup] Error refreshing config:", error);
     } finally {
       setIsRefreshing(false);
     }
@@ -204,16 +204,16 @@ export default function Popup() {
 
   useEffect(() => {
     if (!settings) {
-      console.log("No settings to save");
+      console.log("[Tranquilize:Popup] No settings to save");
       return;
     }
 
-    console.log("Saving settings:", settings);
+    console.log("[Tranquilize:Popup] Saving settings:", settings);
     browser.storage.sync.set({ settings });
   }, [settings]);
 
   if (!settings || !config) {
-    console.log("No settings or config available, showing loading");
+    console.log("[Tranquilize:Popup] No settings or config available, showing loading");
     return (
       <ThemeProvider>
         <div className="absolute top-0 left-0 right-0 bottom-0 text-center h-full p-3 flex flex-col items-center justify-center gap-2">
@@ -245,7 +245,7 @@ export default function Popup() {
   }
 
   function openLink(href: string) {
-    console.log("Opening link:", href);
+    console.log("[Tranquilize:Popup] Opening link:", href);
     browser.tabs.create({ url: href });
   }
 

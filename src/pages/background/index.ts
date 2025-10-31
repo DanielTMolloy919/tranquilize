@@ -5,79 +5,53 @@ import {
   fetchRemoteConfig,
 } from "./configFetcher";
 
-console.log("[Tranquilize] Background script loaded");
+console.log("[Tranquilize:Backend] Background script loaded");
+console.log("[Tranquilize:Backend] Runtime ID:", browser.runtime.id);
 
-// Initialize on startup (not just install)
-async function initialize() {
-  console.log("[Tranquilize] Initializing...");
-  
-  // Fetch remote config
-  await fetchRemoteConfig();
-
-  // Initialize settings if not present
-  const data = await browser.storage.sync.get("settings");
-  if (!data.settings) {
-    console.log("[Tranquilize] Initializing default settings");
-    const config = await getConfig();
-    const settings = generateDefaultSettings(config);
-    await browser.storage.sync.set({ settings });
-  }
-  
-  console.log("[Tranquilize] Initialization complete");
-}
-
-// Initialize immediately on background script load
-initialize().catch(err => {
-  console.error("[Tranquilize] Initialization error:", err);
-});
-
-// Also initialize on install/update
-browser.runtime.onInstalled.addListener(async () => {
-  console.log("[Tranquilize] Extension installed/updated");
-  await initialize();
-});
-
-// Periodically refresh config (every 24 hours)
-browser.alarms.create("refreshConfig", { periodInMinutes: 1440 });
-
-browser.alarms.onAlarm.addListener(async (alarm) => {
-  if (alarm.name === "refreshConfig") {
-    console.log("[Tranquilize] Periodic config refresh");
-    await fetchRemoteConfig();
-  }
-});
-
-// Listen for messages from content scripts and popup
-// Using a more Firefox-compatible approach
+// CRITICAL: Register message listener FIRST before any async work
+// This ensures content scripts can connect immediately
 browser.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  console.log("[Tranquilize] Background received message:", request.message, "from", sender.tab ? "content" : "popup");
-  
+  console.log(
+    "[Tranquilize:Backend] Message received:",
+    request.message,
+    "from",
+    sender.tab ? "content" : "popup"
+  );
+  console.log("[Tranquilize:Backend] Sender details:", {
+    tabId: sender.tab?.id,
+    url: sender.tab?.url,
+    frameId: sender.frameId,
+  });
+
   // Simple ping test
   if (request.message === "ping") {
-    console.log("[Tranquilize] Responding to ping");
+    console.log("[Tranquilize:Backend] Responding to ping");
     sendResponse({ status: "ok", timestamp: Date.now() });
     return false; // Sync response
   }
-  
+
   if (request.message === "getConfig") {
     // Handle async response for Firefox
     (async () => {
       try {
         const config = await getConfig();
-        console.log("[Tranquilize] Got config, sending response. Version:", config?.version);
+        console.log(
+          "[Tranquilize:Backend] Sending config. Version:",
+          config?.version
+        );
         sendResponse(config);
       } catch (error) {
-        console.error("[Tranquilize] Error getting config:", error);
+        console.error("[Tranquilize:Backend] Error getting config:", error);
         sendResponse(null);
       }
     })();
-    
+
     // CRITICAL: Return true to keep message channel open for async response
     return true;
   }
-  
+
   // For other messages, don't keep channel open
-  console.log("[Tranquilize] Unknown message type:", request.message);
+  console.log("[Tranquilize:Backend] Unknown message type:", request.message);
   return false;
 });
 
@@ -88,5 +62,60 @@ browser.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
     } catch (e) {
       console.error(e);
     }
+  }
+});
+
+// Initialize on startup (not just install)
+// This runs AFTER message listeners are set up
+async function initialize() {
+  console.log("[Tranquilize:Backend] Initializing...");
+
+  try {
+    // Fetch remote config (non-blocking for message handlers)
+    console.log("[Tranquilize:Backend] Fetching remote config...");
+    await fetchRemoteConfig();
+    console.log("[Tranquilize:Backend] ✓ Remote config fetched");
+
+    // Initialize settings if not present
+    console.log("[Tranquilize:Backend] Checking settings...");
+    const data = await browser.storage.sync.get("settings");
+    if (!data.settings) {
+      console.log(
+        "[Tranquilize:Backend] No settings found, initializing defaults..."
+      );
+      const config = await getConfig();
+      const settings = generateDefaultSettings(config);
+      await browser.storage.sync.set({ settings });
+      console.log("[Tranquilize:Backend] ✓ Default settings saved");
+    } else {
+      console.log("[Tranquilize:Backend] ✓ Settings already exist");
+    }
+
+    console.log("[Tranquilize:Backend] ✅ Initialization complete");
+  } catch (err) {
+    console.error("[Tranquilize:Backend] ❌ Initialization error:", err);
+    throw err;
+  }
+}
+
+// Initialize immediately on background script load (non-blocking)
+console.log("[Tranquilize:Backend] Starting initialization...");
+initialize().catch((err) => {
+  console.error("[Tranquilize:Backend] Fatal initialization error:", err);
+});
+
+// Also initialize on install/update
+browser.runtime.onInstalled.addListener(async () => {
+  console.log("[Tranquilize:Backend] Extension installed/updated");
+  await initialize();
+});
+
+// Periodically refresh config (every 24 hours)
+browser.alarms.create("refreshConfig", { periodInMinutes: 1440 });
+
+browser.alarms.onAlarm.addListener(async (alarm) => {
+  if (alarm.name === "refreshConfig") {
+    console.log("[Tranquilize:Backend] Periodic config refresh");
+    await fetchRemoteConfig();
   }
 });
