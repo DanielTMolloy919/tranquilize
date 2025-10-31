@@ -10,50 +10,51 @@ console.log("[Tranquilize:Backend] Runtime ID:", browser.runtime.id);
 
 // CRITICAL: Register message listener FIRST before any async work
 // This ensures content scripts can connect immediately
-browser.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  console.log(
-    "[Tranquilize:Backend] Message received:",
-    request.message,
-    "from",
-    sender.tab ? "content" : "popup"
-  );
-  console.log("[Tranquilize:Backend] Sender details:", {
-    tabId: sender.tab?.id,
-    url: sender.tab?.url,
-    frameId: sender.frameId,
-  });
+browser.runtime.onMessage.addListener(
+  (request: any, sender, sendResponse: any) => {
+    console.log(
+      "[Tranquilize:Backend] Message received:",
+      request.message,
+      "from",
+      sender.tab ? "content" : "popup"
+    );
+    console.log("[Tranquilize:Backend] Sender details:", {
+      tabId: sender.tab?.id,
+      url: sender.tab?.url,
+      frameId: sender.frameId,
+    });
 
-  // Simple ping test
-  if (request.message === "ping") {
-    console.log("[Tranquilize:Backend] Responding to ping");
-    sendResponse({ status: "ok", timestamp: Date.now() });
-    return false; // Sync response
+    // Simple ping test
+    if (request.message === "ping") {
+      console.log("[Tranquilize:Backend] Responding to ping");
+      sendResponse({ status: "ok", timestamp: Date.now() });
+      return; // Sync response
+    }
+
+    if (request.message === "getConfig") {
+      // Handle async response for Firefox
+      (async () => {
+        try {
+          const config = await getConfig();
+          console.log(
+            "[Tranquilize:Backend] Sending config. Version:",
+            config?.version
+          );
+          sendResponse(config);
+        } catch (error) {
+          console.error("[Tranquilize:Backend] Error getting config:", error);
+          sendResponse(null);
+        }
+      })();
+
+      // CRITICAL: Return true to keep message channel open for async response
+      return true;
+    }
+
+    // For other messages, don't keep channel open
+    console.log("[Tranquilize:Backend] Unknown message type:", request.message);
   }
-
-  if (request.message === "getConfig") {
-    // Handle async response for Firefox
-    (async () => {
-      try {
-        const config = await getConfig();
-        console.log(
-          "[Tranquilize:Backend] Sending config. Version:",
-          config?.version
-        );
-        sendResponse(config);
-      } catch (error) {
-        console.error("[Tranquilize:Backend] Error getting config:", error);
-        sendResponse(null);
-      }
-    })();
-
-    // CRITICAL: Return true to keep message channel open for async response
-    return true;
-  }
-
-  // For other messages, don't keep channel open
-  console.log("[Tranquilize:Backend] Unknown message type:", request.message);
-  return false;
-});
+);
 
 browser.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
   if (changeInfo.status === "complete" && tab.active && changeInfo.url) {
